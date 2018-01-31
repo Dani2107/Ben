@@ -86,7 +86,7 @@ df_wdm131<-df_wdm131[,c(1:11,15,12:14)]    # re-ordering columns so SSDateTime n
 StartStops<-which(df_wdm131[,15]>0)  # making vector of all rows with starts and stops
 
 for(i in 2:length(StartStops)){
-  if(i %%2 ==0){ #this bit says if it is even sum the bout and write to rows with start in
+  if(i %%2 ==0){ #this bit says if it is even sum the bout and write to rows with start in - this only works if your first one is stop. if it start you will want to change the 0 to 1 I think
     df_wdm131[StartStops[i],11]<-sum(df_wdm131[StartStops[i]:StartStops[i+1],9])
   }         # working out sum of activity between start and stop
 }
