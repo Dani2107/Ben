@@ -39,6 +39,11 @@ dog.data[,10:15]<-getSunlightTimes(date = dog.data$Date_2, lat = 0.2922, lon = 3
 #deletes columns we don't need
 dog.data<-dog.data[,-c(11:12,15)]
 
+#add columns for correct moonrise and moonset (ie for the subsequent night) - writing in dates so they are the right format
+dog.data[,13]<-as.POSIXct(dog.data[1,9], tz = "Africa/Nairobi")
+dog.data[,14]<-as.POSIXct(dog.data[1,9], tz = "Africa/Nairobi")
+dog.data[,15]<-0
+
 
 #fill in the NA's with the correct date
 for(i in 1:nrow(dog.data)){
@@ -51,40 +56,50 @@ for(i in 1:nrow(dog.data)){
 }
 
 
+for(i in 1:nrow(dog.data)){
+if(dog.data[i,8]<dog.data[i,6]){
+  dog.data[i,13]<-dog.data[i+1,8]
+} else {
+  dog.data[i,13]<-dog.data[i,8]
+}
+}
+
+for(i in 1:nrow(dog.data)){
+if(dog.data[i,9]<dog.data[i,13]){
+  dog.data[i,14]<-dog.data[i+1,9]
+} else {
+  dog.data[i,14]<-dog.data[i,9]
+}
+}
+
 
 #then you want to assign moonlight
 # the steps are:
 for(i in 1:nrow(dog.data)){
-  if(dog.data[i,9]<dog.data[i,8]){
-  moonset<-dog.data[i+1,9]
-} else {
-  moonset<-dog.data[i,9]
+  if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]<dog.data[i,7]&dog.data[i,14]>dog.data[i,6]){
+    dog.data[i,15]<-0
+  }
+  if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]<dog.data[i,11]){
+    dog.data[i,15]<-difftime(dog.data[i,14],dog.data[i,7], units = "hours")
+  }
+  if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]>dog.data[i,11]){
+    dog.data[i,15]<-difftime(dog.data[i,11],dog.data[i,7], units = "hours")
+  }
+  if(dog.data[i,13]<dog.data[i,11]&dog.data[i,13]>dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]<dog.data[i,11]){
+    dog.data[i,15]<-difftime(dog.data[i,14],dog.data[i,13], units = "hours")
+  }
+  if(dog.data[i,13]<dog.data[i,11]&dog.data[i,13]>dog.data[i,7]&dog.data[i,14]>dog.data[i,11]){
+    dog.data[i,15]<-difftime(dog.data[i,11], dog.data[i,13], units = "hours")
+  }
 }
-  if(dog.data[i,8]>dog.data[i,2]&dog.data[i,8]<dog.data[i,6]){
-    moonrise<-dog.data[i+1,8]
-  } else{
-    moonrise<-dog.data[i,8]
-  }
-  if(moonrise>dog.data[i,6]&moonrise<dog.data[i,7]&moonset>dog.data[i,6]&moonset<dog.data[i,7]){
-    dog.data[i,13]<-0
-  }
-  if(moonrise>dog.data[i,6]&moonrise<dog.data[i,7]&moonset>dog.data[i,7]&moonset<dog.data[i,11]){
-    dog.data[i,13]<-moonset-dog.data[i,7]
-  }
-  if(moonrise>dog.data[i,7]&moonrise<dog.data[i,11]&moonset<dog.data[i,11]&moonset>dog.data[i,7]){
-    dog.data[i,13]<-moonset-moonrise
-  }
-  if(moonrise>dog.data[i,7]&moonrise<dog.data[i,11]&moonset>dog.data[i,11]){
-    dog.data[i,13]<-dog.data[i,11]-moonrise
-  }
-  #if(moonrise>dog.data[i,6]&moonrise<dog.data[i,7]&moonset>dog.data[i,7]&moonset<dog.data[i,11]){
-  #  dog.data[i,13]<-dog.data[i,11]-dog.data[i,7]
-  #}
-}
-
-dog.data[21,8]>0
 
 View(dog.data)
 
+dog.data[23,15]<-difftime(dog.data[23,11], dog.data[23,13], units = "hours")
 
-dog.data[2,8]>dog.data[2,2]&dog.data[2,8]<dog.data[2,6]
+
+dog.data[23,13]<dog.data[23,11]&dog.data[23,13]>dog.data[23,7]&dog.data[23,14]>dog.data[23,11]
+dog.data[23,11]-dog.data[23,13]
+
+dog.data$V15
+z<-as.numeric(dog.data[23,11]-dog.data[23,13])
