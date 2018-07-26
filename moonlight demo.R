@@ -42,6 +42,7 @@ dog.data<-dog.data[,-c(11:12,15)]
 #add columns for correct moonrise and moonset (ie for the subsequent night) - writing in dates so they are the right format
 dog.data[,13]<-as.POSIXct(dog.data[1,9], tz = "Africa/Nairobi")
 dog.data[,14]<-as.POSIXct(dog.data[1,9], tz = "Africa/Nairobi")
+#add column to write hours of moonlight into
 dog.data[,15]<-0
 
 
@@ -55,7 +56,7 @@ for(i in 1:nrow(dog.data)){
   }
 }
 
-
+#write the correct moonrise and moonset for the night after that date
 for(i in 1:nrow(dog.data)){
 if(dog.data[i,8]<dog.data[i,6]){
   dog.data[i,13]<-dog.data[i+1,8]
@@ -73,33 +74,45 @@ if(dog.data[i,9]<dog.data[i,13]){
 }
 
 
-#then you want to assign moonlight
-# the steps are:
+#then you want to calculate the hours of moonlight
 for(i in 1:nrow(dog.data)){
+  #if moonrise is between sunrise and sunset and moonset is between sunrise and sunset then 0
   if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]<dog.data[i,7]&dog.data[i,14]>dog.data[i,6]){
     dog.data[i,15]<-0
   }
+  #if moonrise is between sunrise and sunset and moonset is between sunset and sunrise the next day then moonset minus sunset
   if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]<dog.data[i,11]){
     dog.data[i,15]<-difftime(dog.data[i,14],dog.data[i,7], units = "hours")
   }
+  #if moonrise is between sunrise and sunset and moonset is after sunrise and sunset the next day then sunrise the next day minust sunset
   if(dog.data[i,13]>dog.data[i,6]&dog.data[i,13]<dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]>dog.data[i,11]){
     dog.data[i,15]<-difftime(dog.data[i,11],dog.data[i,7], units = "hours")
   }
+  #if moonrise is between sunset and sunrise the next day and moonset is between sunset and sunrise the next day then moonset minus moonrise
   if(dog.data[i,13]<dog.data[i,11]&dog.data[i,13]>dog.data[i,7]&dog.data[i,14]>dog.data[i,7]&dog.data[i,14]<dog.data[i,11]){
     dog.data[i,15]<-difftime(dog.data[i,14],dog.data[i,13], units = "hours")
   }
+  #if moonrise is between sunset and sunrise and moonset is after sunrise the next day then sunset the next day minus moonrise
   if(dog.data[i,13]<dog.data[i,11]&dog.data[i,13]>dog.data[i,7]&dog.data[i,14]>dog.data[i,11]){
     dog.data[i,15]<-difftime(dog.data[i,11], dog.data[i,13], units = "hours")
   }
 }
 
+#add illumination
+dog.data[,16:17]<-getMoonIllumination(date = dog.data$Date, keep="fraction")
+#deletes columns we don't need
+dog.data<-dog.data[,-16]
+
+names(dog.data)[13]<-"correct_moonrise"
+names(dog.data)[14]<-"correct_moonset"
+names(dog.data)[15]<-"Hours_of_moonlight"
+
+for(i in 1:nrow(dog.data)){
+  dog.data[i,17]<-dog.data[i,15]*dog.data[i,16]
+}
+
+names(dog.data)[17]<-"combined_moonlight"
+
 View(dog.data)
 
-dog.data[23,15]<-difftime(dog.data[23,11], dog.data[23,13], units = "hours")
 
-
-dog.data[23,13]<dog.data[23,11]&dog.data[23,13]>dog.data[23,7]&dog.data[23,14]>dog.data[23,11]
-dog.data[23,11]-dog.data[23,13]
-
-dog.data$V15
-z<-as.numeric(dog.data[23,11]-dog.data[23,13])
