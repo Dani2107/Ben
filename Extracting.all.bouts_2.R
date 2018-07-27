@@ -41,7 +41,7 @@ dog.data$timedate.local<-dog.data$timedate+3*60*60
 dog.data$LocalDate<-as.Date(dog.data$timedate.local)
 dog.data$LocalTime<-strftime(dog.data$timedate.local, format="%H:%M:%S")
 
-write.csv(dog.data,"alldogs.csv")
+dog.data<-read.csv("alldogs.csv")
 
 
 #then want to get range of dates included in data
@@ -120,20 +120,30 @@ for(i in 1:nrow(df.dates)){
   }
 }
 
+View(df.dates)
+
 #add illumination
-dog.data[,16:17]<-getMoonIllumination(date = dog.data$Date, keep="fraction")
-#deletes columns we don't need
-dog.data<-dog.data[,-16]
+df.dates[,16:17]<-getMoonIllumination(date = df.dates$Date, keep="fraction")
 
-names(dog.data)[13]<-"correct_moonrise"
-names(dog.data)[14]<-"correct_moonset"
-names(dog.data)[15]<-"Hours_of_moonlight"
 
-for(i in 1:nrow(dog.data)){
-  dog.data[i,17]<-dog.data[i,15]*dog.data[i,16]
+names(df.dates)[13]<-"correct_moonrise"
+names(df.dates)[14]<-"correct_moonset"
+names(df.dates)[15]<-"Hours_of_moonlight"
+
+for(i in 1:nrow(df.dates)){
+  df.dates[i,18]<-df.dates[i,15]*df.dates[i,17]
 }
 
-names(dog.data)[17]<-"combined_moonlight"
+names(df.dates)[18]<-"combined_moonlight"
+
+#deletes columns we don't need
+df.dates<-df.dates[,-c(2,10,16)]
+
+write.csv(df.dates,"dfdates_moon.csv")
+
+#get rd of 1st column
+dog.data<-dog.data[,-1]
+
 
 #change local time to time
 dog.data$LocalTime<-chron(times=dog.data$LocalTime)
@@ -158,7 +168,7 @@ dog.data[,"StopStart"]<-NA
 #fills a column with starts and stops of bouts
 for(i in 1:nrow(dog.data)){
   if(sum(dog.data[i+1,9],dog.data[i+2,9],dog.data[i+3,9])==0 && dog.data[i,9]>0 && dog.data[i+1,1]==dog.data[i,1]){
-    dog.data[i+1,14]<-"Stop"          # && dog.data[i+1,1]==dog.data[i,1]) this bit controls for same dog
+    dog.data[i+1,14]<-"Stop"    #&& dog.data[i+1,1]==dog.data[i,1]) this bit controls for same dog
   }
   if(dog.data[i+1,9]>0 && dog.data[i,9]==0 && dog.data[i+1,1]==dog.data[i,1]){
     dog.data[i+1,14]<-"Start"
