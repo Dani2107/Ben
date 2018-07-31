@@ -2,10 +2,12 @@ install.packages("lubridate")
 install.packages("chron")
 install.packages("suncalc")
 install.packages("dtplyr")
+install.packages("data.table")
 library(lubridate)
 library(chron)
 library(suncalc)
-library(dtplyr)
+library(dplyr)
+library(data.table)
 
 #read in table - note you can join the project and then you shouldn't need to change the file pathways
 #this file is just a small sample from 1 dog - you will wat to create a table of all dogs in a similar format
@@ -110,10 +112,12 @@ View(allbouts)
 
 #writes csv table - you don't have to do this but good for if you leave code and don't want to lose progress
 write.table(allbouts,"All.dogs.all.bouts",sep=",",row.names=FALSE) 
-
+allbouts<-read.csv("All.dogs.all.bouts.csv")
 
 #caluclate intensity of each bout
 allbouts[,"Intensity"]<-NA
+
+View(allbouts)
 
 for(i in 1:nrow(allbouts)){
   allbouts[i,"Intensity"]<-allbouts[i,"SumAct"]/allbouts[i,"Duration"]
@@ -122,10 +126,9 @@ for(i in 1:nrow(allbouts)){
 #add time of day the bout comes under
 allbouts[,"PartOfDay"]<-NA
 
+allbouts[,"SSTime"]<-times(allbouts$SSTime, format="H:M:S")
+
 for(i in 2:nrow(allbouts)){
-  if(allbouts[i,"SSTime"] %between% c('04:55:39','06:56:04') && allbouts[i+1,"SSTime"] %between% c('04:55:39','07:30:40')){
-    allbouts[i,"PartOfDay"]<-"EarlyMorning"          
-  }
   if(allbouts[i,"SSTime"] %between% c('04:55:39','06:56:04') && allbouts[i+1,"SSTime"] %between% c('07:30:41','12:51:33')){
     allbouts[i,"PartOfDay"]<-"Morning"          
   }
@@ -161,6 +164,19 @@ for(i in 2:nrow(allbouts)){
   }
 } 
 
+View(allbouts)
+
+#add stop time of the previous bout to long bouts
+allbouts[,"StopTime_Previous"]<-as.character("1/1/1900 00:00:00")
+allbouts$StopTime_Previous<-as.POSIXct(allbouts$StopTime_Previous,format="%d/%m/%Y %H:%M",tz="UTC")
+
+#adds the previous stop time to the start rows and start time to the stop rows
+for(i in 2:nrow(allbouts)){
+  if(allbouts[i-1,1]==allbouts[i,1]){
+    allbouts[i,18]<-as.POSIXct(allbouts[i-1,12],format="%d/%m/%Y %H:%M",tz="UTC")
+  }
+}
+
 #extract out inactive periods into a data frame called inactivity
 Inactivity<-subset(allbouts,allbouts$Bout=="Stop")
 
@@ -169,39 +185,25 @@ View(Inactivity)
 #extract out bouts only
 Bouts.only<-subset(allbouts,allbouts$Bout=="Start")
 
-
+View(Bouts.only)
+View(allbouts)
 #extract out bouts that have a sum of activity over 1000 and a length over 20 - what are most likely hunts
 #you are welcome to have a play with these numbers and see if you think the cut-offs are right
-Hunts.only<-subset(allbouts,allbouts$SumAct>=1000)
 Hunts.only<-subset(allbouts,allbouts$Duration>=20)
+Hunts.only<-subset(Hunts.only,Hunts.only$SumAct>=1000)
 
 View(Hunts.only)
 
 #you can plot out your bouts like this
-hist(Hunts.only$StartTime,breaks=1440)
+hist(Hunts.only$SSTime,breaks=1440)
 
-#remove duplicate stops (we only want the ones immediately after the starts - ie the end of the long bouts)
-for(i in 2:nrow(Hunts.only)){
-  if(Hunts.only[i-1,"Bout"]=="Stop" && Hunts.only[i,"Bout"]=="Stop"){
-    Hunts.only[i,"Bout"]<-0
-  }
-  if(Hunts.only[i-1,"Bout"]==0 && Hunts.only[i,"Bout"]=="Stop"){
-    Hunts.only[i,"Bout"]<-0
-  }
-}
+Hunts.only[,"Bout"]<-as.character(Hunts.only[,"Bout"])
 
-Hunts.only<-subset(Hunts.only,Hunts.only$Bout>0)
 
-#add stop time of the previous bout to long bouts
-Hunts.only[,"StopTime_Previous"]<-"1/1/1900 00:00:00"
-Hunts.only$StopTime_Previous<-as.POSIXct(Hunts.only$StopTime_Previous,format="%d/%m/%Y %H:%M",tz="UTC")
 
-#adds the previous stop time to the start rows and start time to the stop rows
-for(i in 2:nrow(Hunts.only)){
-  if(Hunts.only[i-1,1]==Hunts.only[i,1]){
-    Hunts.only[i,16]<-Hunts.only[i-1,12]
-  }
-}
+write.csv(allbouts,"All.dogs.all.bouts.csv")
+write.csv(Hunts.only,"Hunts")
+
 
 #example of how to extract start of bout relative to sunrise.
 #I would suggest doing start and stop times in the day relative to sunrise and at night relative to sunset
