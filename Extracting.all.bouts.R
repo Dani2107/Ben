@@ -128,7 +128,14 @@ allbouts[,"PartOfDay"]<-NA
 
 allbouts[,"SSTime"]<-times(allbouts$SSTime, format="H:M:S")
 
-for(i in 2:nrow(allbouts)){
+allbouts<-allbouts2
+
+a<-c(which(is.na(allbouts$SSTime)==TRUE))
+
+allbouts[a,"SSTime"]<-0
+
+
+for(i in 27772:nrow(allbouts)){
   if(allbouts[i,"SSTime"] %between% c('04:55:39','06:56:04') && allbouts[i+1,"SSTime"] %between% c('07:30:41','12:51:33')){
     allbouts[i,"PartOfDay"]<-"Morning"          
   }
@@ -177,6 +184,8 @@ for(i in 2:nrow(allbouts)){
   }
 }
 
+allbouts<-read.csv("All.dogs.all.bouts.csv")
+
 #extract out inactive periods into a data frame called inactivity
 Inactivity<-subset(allbouts,allbouts$Bout=="Stop")
 
@@ -193,16 +202,23 @@ Hunts.only<-subset(allbouts,allbouts$Duration>=20)
 Hunts.only<-subset(Hunts.only,Hunts.only$SumAct>=1000)
 
 View(Hunts.only)
+Hunts.only$SSTime<-times(Hunts.only$SSTime, format="H:M:S")
+
+summary(Hunts.only$LocalDate)
+min(allbouts$LocalDate)
+
 
 #you can plot out your bouts like this
 hist(Hunts.only$SSTime,breaks=1440)
+
+chron(Hunts.only$SSTime)
 
 Hunts.only[,"Bout"]<-as.character(Hunts.only[,"Bout"])
 
 
 
 write.csv(allbouts,"All.dogs.all.bouts.csv")
-write.csv(Hunts.only,"Hunts")
+write.csv(Hunts.only,"Hunts_2")
 
 
 #example of how to extract start of bout relative to sunrise.
