@@ -275,23 +275,23 @@ Eveningdur<-lme(as.numeric(as.character(Duration)) ~ as.numeric(as.character(Tem
 summary(Eveningdur)
 
 
-Evening_dur_oc1<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc1<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc2<-lme(as.numeric(as.character(Duration)) ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc2<-lme(as.numeric(as.character(Duration)) ~ Moonlight + Moonrise_sun, random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_dur_oc3<-lme(as.numeric(as.character(Duration)) ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc4<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc4<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc5<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc5<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc6<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc6<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc7<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc7<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_dur_oc8<-lme(as.numeric(as.character(Duration)) ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_dur_oc9<-lme(as.numeric(as.character(Duration)) ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_dur_oc9<-lme(as.numeric(as.character(Duration)) ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_dur_oc10<-lme(as.numeric(as.character(Duration)) ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
@@ -305,23 +305,23 @@ Eveningint<-lme(as.numeric(as.character(Intensity)) ~ as.numeric(as.character(Te
             , random=~1|ID, data=Evening2, na.action=na.exclude)
 summary(Eveningint)
 
-Evening_Intensity_oc1<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc1<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc2<-lme(as.numeric(as.character(Intensity)) ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc2<-lme(as.numeric(as.character(Intensity)) ~ Moonlight + Moonrise_sun, random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_Intensity_oc3<-lme(as.numeric(as.character(Intensity)) ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc4<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc4<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc5<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc5<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc6<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc6<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc7<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc7<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_Intensity_oc8<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_Intensity_oc9<-lme(as.numeric(as.character(Intensity)) ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_Intensity_oc9<-lme(as.numeric(as.character(Intensity)) ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_Intensity_oc10<-lme(as.numeric(as.character(Intensity)) ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
@@ -334,23 +334,23 @@ Eveningstart<-lme(SSTime ~  as.numeric(as.character(Temperature)) + as.numeric(a
                   + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)     
 summary(Eveningstart)
 
-Evening_start_oc1<-lme(SSTime ~ Temperature + Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc1<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc2<-lme(SSTime ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc2<-lme(SSTime ~ Moonlight + Moonrise_sun, random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_start_oc3<-lme(SSTime ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc4<-lme(SSTime ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc4<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc5<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc5<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc6<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc6<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc7<-lme(SSTime ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc7<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_start_oc8<-lme(SSTime ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_start_oc9<-lme(SSTime ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_start_oc9<-lme(SSTime ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_start_oc10<-lme(SSTime ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
@@ -363,23 +363,23 @@ Eveningstop<-lme(Stop.time.or.start ~ as.numeric(as.character(Temperature))
                  + Denning+as.numeric(as.character(Temperature)) , random=~1|ID, data=Evening2, na.action=na.exclude)     
 summary(Eveningstop)
 
-Evening_stop_oc1<-lme(Stop.time.or.start ~ Temperature + Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc1<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc2<-lme(Stop.time.or.start ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc2<-lme(Stop.time.or.start ~ Moonlight + Moonrise_sun, random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_stop_oc3<-lme(Stop.time.or.start ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc4<-lme(Stop.time.or.start ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc4<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc5<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc5<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc6<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc6<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc7<-lme(Stop.time.or.start ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc7<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_stop_oc8<-lme(Stop.time.or.start ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
-Evening_stop_oc9<-lme(Stop.time.or.start ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+Evening_stop_oc9<-lme(Stop.time.or.start ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
 Evening_stop_oc10<-lme(Stop.time.or.start ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
 
@@ -389,19 +389,121 @@ summary(model.avg(Evening_stop))
 
 #night
 Night2<-subset(Night, Babysit=="no")
+Night2<-Night2[complete.cases(Night2),] 
 Nightdur<-lme(as.numeric(as.character(Duration)) ~ Moonlight , random=~1|ID, data=Night2, na.action=na.exclude)
 summary(Nightdur)
+
+
+
+Night_dur_oc1<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc2<-lme(as.numeric(as.character(Duration)) ~ Moonlight + Moonrise_sun, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc3<-lme(as.numeric(as.character(Duration)) ~ Temperature , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc4<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc5<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc6<-lme(as.numeric(as.character(Duration)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc7<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc8<-lme(as.numeric(as.character(Duration)) ~ Temperature + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc9<-lme(as.numeric(as.character(Duration)) ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur_oc10<-lme(as.numeric(as.character(Duration)) ~ Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_dur<-list(Night_dur_oc1,Night_dur_oc2,Night_dur_oc3,Night_dur_oc4,Night_dur_oc5,Night_dur_oc6,Night_dur_oc7,Night_dur_oc8,Night_dur_oc9,Night_dur_oc10)
+
+summary(model.avg(Night_dur))
 
 Nightint<-lme(as.numeric(as.character(Intensity)) ~ Moonlight 
                 , random=~1|ID, data=Night2, na.action=na.exclude)
 summary(Nightint)
+
+
+Night_Intensity_oc1<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc2<-lme(as.numeric(as.character(Intensity)) ~ Moonlight + Moonrise_sun, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc3<-lme(as.numeric(as.character(Intensity)) ~ Temperature , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc4<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc5<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc6<-lme(as.numeric(as.character(Intensity)) ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc7<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc8<-lme(as.numeric(as.character(Intensity)) ~ Temperature + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc9<-lme(as.numeric(as.character(Intensity)) ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity_oc10<-lme(as.numeric(as.character(Intensity)) ~ Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_Intensity<-list(Night_Intensity_oc1,Night_Intensity_oc2,Night_Intensity_oc3,Night_Intensity_oc4,Night_Intensity_oc5,Night_Intensity_oc6,Night_Intensity_oc7,Night_Intensity_oc8,Night_Intensity_oc9,Night_Intensity_oc10)
+
+summary(model.avg(Night_Intensity))
+
 
 Night2$SSTime<-chron(times=Night2$SSTime)
 Nightstart<-lme(SSTime ~  as.numeric(as.character(Temperature_before)) 
                 , random=~1|ID, data=Night2, na.action=na.exclude)     
 summary(Nightstart)
 
+Night_start_oc1<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc2<-lme(SSTime ~ Moonlight + Moonrise_sun, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc3<-lme(SSTime ~ Temperature , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc4<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc5<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc6<-lme(SSTime ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc7<-lme(SSTime ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc8<-lme(SSTime ~ Temperature + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc9<-lme(SSTime ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start_oc10<-lme(SSTime ~ Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_start<-list(Night_start_oc1,Night_start_oc2,Night_start_oc3,Night_start_oc4,Night_start_oc5,Night_start_oc6,Night_start_oc7,Night_start_oc8,Night_start_oc9,Night_start_oc10)
+
+summary(model.avg(Night_start))
+
 Night2$Stop.time.or.start<-chron(times=Night2$Stop.time.or.start)
 Nightstop<-lme(Stop.time.or.start ~ Moonlight + as.numeric(as.character(Temperature_before)) * as.numeric(as.character(Rainfall))
                + Denning * as.numeric(as.character(Temperature_before)), random=~1|ID, data=Night2, na.action=na.exclude)     
 summary(Nightstop)
+
+Night_stop_oc1<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc2<-lme(Stop.time.or.start ~ Moonlight + Moonrise_sun, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc3<-lme(Stop.time.or.start ~ Temperature , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc4<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun + Rainfall , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc5<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc6<-lme(Stop.time.or.start ~ Temperature * Rainfall + Moonlight + Moonrise_sun + Temperature * Denning, random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc7<-lme(Stop.time.or.start ~ Temperature + Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc8<-lme(Stop.time.or.start ~ Temperature + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc9<-lme(Stop.time.or.start ~ Moonlight + Moonrise_sun + Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop_oc10<-lme(Stop.time.or.start ~ Denning , random=~1|ID, data=Night2, na.action=na.exclude)
+
+Night_stop<-list(Night_stop_oc1,Night_stop_oc2,Night_stop_oc3,Night_stop_oc4,Night_stop_oc5,Night_stop_oc6,Night_stop_oc7,Night_stop_oc8,Night_stop_oc9,Night_stop_oc10)
+
+summary(model.avg(Night_stop))
+
