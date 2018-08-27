@@ -43,6 +43,8 @@ Morn_mod_oc10<-lme(Morning ~ Denning , random=~1|ID, data=Occurrance2, na.action
 
 Morn_mod<-list(Morn_mod_oc1,Morn_mod_oc2,Morn_mod_oc3,Morn_mod_oc4,Morn_mod_oc5,Morn_mod_oc6,Morn_mod_oc7,Morn_mod_oc8,Morn_mod_oc9,Morn_mod_oc10)
 
+importance(Morn_mod)
+
 summary(model.avg(Morn_mod))
 
 Day_mod_oc<-lme(Day ~ Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
@@ -181,6 +183,8 @@ Morn_int_oc10<-lme(as.numeric(as.character(Intensity)) ~ Denning , random=~1|ID,
 
 Morn_int<-list(Morn_int_oc1,Morn_int_oc2,Morn_int_oc3,Morn_int_oc4,Morn_int_oc5,Morn_int_oc6,Morn_int_oc7,Morn_int_oc8,Morn_int_oc9,Morn_int_oc10)
 
+importance(Morn_int)
+
 summary(model.avg(Morn_int))
 
 
@@ -214,7 +218,7 @@ Morn_start<-list(Morn_start_oc1,Morn_start_oc2,Morn_start_oc3,Morn_start_oc4,Mor
 
 summary(model.avg(Morn_start))
 
-
+hist(Morning2$SSTime)
 
 Morning2$Stop.time.or.start<-chron(times=Morning2$Stop.time.or.start)
 Morn_stop<-lme(Stop.time.or.start ~ as.numeric(as.character(Temperature)) + as.numeric(as.character(Rainfall))  +
