@@ -10,7 +10,7 @@ Occurrance<-read.csv("Bout_liklihood.csv")
 Morning<-read.csv("Morning.csv")
 Day<-read.csv("Day.csv")
 Evening<-read.csv("Evening.csv")
-Night<-read.csv("Night.csv")
+Night<-read.csv("Night2.csv")
 
 
 Occurrance2<-subset(Occurrance, Babysitting=="no")
@@ -73,25 +73,25 @@ summary(model.avg(Day_mod))
 Night_mod_oc<-lme(Night ~  Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 summary(Night_mod_oc)
 
-Night_mod_oc1<-lme(Night ~ Temperature + Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc1<-lme(Night2 ~ Temperature + Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc2<-lme(Night ~ Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc2<-lme(Night2 ~ Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc3<-lme(Night ~ Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc3<-lme(Night2 ~ Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc4<-lme(Night ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc4<-lme(Night2 ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc5<-lme(Night ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc5<-lme(Night2 ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc6<-lme(Night ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc6<-lme(Night2 ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc7<-lme(Night ~ Temperature + Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc7<-lme(Night2 ~ Temperature + Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc8<-lme(Night ~ Temperature + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc8<-lme(Night2 ~ Temperature + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc9<-lme(Night ~ Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc9<-lme(Night2 ~ Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
-Night_mod_oc10<-lme(Night ~ Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+Night_mod_oc10<-lme(Night2 ~ Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 
 Night_mod<-list(Night_mod_oc1,Night_mod_oc2,Night_mod_oc3,Night_mod_oc4,Night_mod_oc5,Night_mod_oc6,Night_mod_oc7,Night_mod_oc8,Night_mod_oc9,Night_mod_oc10)
 
@@ -397,6 +397,7 @@ Night2<-Night2[complete.cases(Night2),]
 Nightdur<-lme(as.numeric(as.character(Duration)) ~ Moonlight , random=~1|ID, data=Night2, na.action=na.exclude)
 summary(Nightdur)
 
+hist(Night2$Duration)
 
 
 Night_dur_oc1<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
