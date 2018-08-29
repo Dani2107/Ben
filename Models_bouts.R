@@ -10,7 +10,7 @@ Occurrance<-read.csv("Bout_liklihood.csv")
 Morning<-read.csv("Morning.csv")
 Day<-read.csv("Day.csv")
 Evening<-read.csv("Evening.csv")
-Night<-read.csv("Night2.csv")
+Night<-read.csv("Night3.csv")
 
 
 Occurrance2<-subset(Occurrance, Babysitting=="no")
@@ -394,10 +394,11 @@ summary(model.avg(Evening_stop))
 #night
 Night2<-subset(Night, Babysit=="no")
 Night2<-Night2[complete.cases(Night2),] 
+Night2$Temperature<-as.numeric(as.character(Night2$Temperature))
 Nightdur<-lme(as.numeric(as.character(Duration)) ~ Moonlight , random=~1|ID, data=Night2, na.action=na.exclude)
 summary(Nightdur)
 
-hist(Night2$Duration)
+hist(Night2$Temperature)
 
 
 Night_dur_oc1<-lme(as.numeric(as.character(Duration)) ~ Temperature + Moonlight + Moonrise_sun , random=~1|ID, data=Night2, na.action=na.exclude)
