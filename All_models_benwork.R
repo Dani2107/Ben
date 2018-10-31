@@ -1808,3 +1808,7 @@ dogcrep.list = c(dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9,dn10,dn11,dn12,dn13,dn14,dn
 
 summary(model.avg(dogcrep.list))
 
+
+
+######RANDOM POINT COMPARISON########
+kruskal.test()
