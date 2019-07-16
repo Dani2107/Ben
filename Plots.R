@@ -40,9 +40,9 @@ ggplot(data = df2, aes(x = DummyDT, y = average)) +
             fill = "lightskyblue", alpha = 0.03) +
   geom_line(aes(group=ID), size=0.75) +
   scale_x_datetime(date_breaks = "4 hour",
-                   date_labels = "%I:%M %p", expand=c(0,0)) +
+                   date_labels = "%H:%M", expand=c(0,0)) +
   scale_y_continuous(expand=c(0,0)) +
-  theme(text = element_text(size=16)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
   xlab("Time") +
   ylab("Activity")
 
@@ -102,11 +102,11 @@ View(df7)
 df8<-rbind(df6,df7)
 
 ggplot(data = df8, aes(x = partofday, y = average)) + 
-  geom_line(aes(group=species, linetype=species), size=0.75) +
+  geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=16)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
   xlab("Time period") +
   ylab("Displacement (km)")
 
@@ -136,11 +136,11 @@ colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
 df12<-rbind(df11,df10,df9)
 
 ggplot(data = df12, aes(x = partofday, y = average)) + 
-  geom_line(aes(group=species, linetype=species), size=0.75) +
+  geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=16)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
   xlab("Time period") +
   ylab("Woody cover")
 
@@ -168,11 +168,11 @@ colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
 df12<-rbind(df11,df10,df9)
 
 ggplot(data = df12, aes(x = partofday, y = average)) + 
-  geom_line(aes(group=species, linetype=species), size=0.75) +
+  geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=16)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
   xlab("Time period") +
   ylab("Ditance to glade (km)")
 
@@ -188,8 +188,20 @@ hunt_times$Stop.time.or.start<-round_date(hunt_times$Stop.time.or.start, "5 minu
 
 hist(hunt_times$SSTime,breaks=288)
 
-times<-seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by = "5 min")
+times2<-seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by = "5 min")
+
 ggplot(data=hunt_times, aes(x=SSTime)) + 
-  geom_histogram(breaks=times)
+  geom_histogram(breaks=times)+
+  scale_x_datetime(date_labels = "%I:%M %p", expand=c(0,0)) +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
 
-
+ggplot(data=hunt_times, aes(x=Stop.time.or.start)) + 
+  geom_histogram(breaks=times)+
+  scale_x_datetime(date_labels = "%I:%M %p", expand=c(0,0)) +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
