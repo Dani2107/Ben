@@ -2,6 +2,7 @@
 library(ggplot2)
 library(lubridate)
 library(dplyr)
+library(cowplot)
 
 #1st is activity (all dogs) with lines indicating start and stop times
 activity<-read.csv("alldogs.csv")
@@ -10,10 +11,11 @@ activity$UTC.DateTime<-as.POSIXct(paste(activity$UTC.Date, activity$UTC.Time), f
 activity$LocalDateTime<-activity$UTC.DateTime+10800
 activity$LocalTime <- format(activity$LocalDateTime,"%H:%M:%S")
 activity$LocalDate <- format(activity$LocalDateTime,"%Y-%m-%d")
-activity$Dummy <- format(Sys.Date(),"%Y-%m-%d")
+activity$Dummy <- format(as.Date("2019-07-16"),"%Y-%m-%d")
 activity$DummyDT <- as.POSIXct(paste(activity$Dummy,activity$LocalTime), format="%Y-%m-%d %H:%M:%S")
 activity$DummyDT <- round_date(activity$DummyDT, "5 minutes")
 activity$SumAct<-activity$ActivityX+activity$ActivityY
+
 
 
 ggplot(data = a, aes(x = DummyDT, y = SumAct, group=1)) + geom_line()
@@ -29,20 +31,24 @@ df2<- activity %>%
 View(df2)
 
 
-ggplot(data = df2, aes(x = DummyDT, y = average)) + 
+actplot<-ggplot(data = df2, aes(x = DummyDT, y = average)) + 
   geom_rect(aes(xmin = as.POSIXct("2019-07-16 04:55:39", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-07-16 06:56:04", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
-            fill = "pink", alpha = 0.03) +
+            fill = "darkgrey", alpha = 0.03) +
   geom_rect(aes(xmin = as.POSIXct("2019-07-16 07:30:41", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-07-16 12:51:33", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
-            fill = "pink", alpha = 0.03) +
+            fill = "darkgrey", alpha = 0.03) +
   geom_rect(aes(xmin = as.POSIXct("2019-07-16 16:01:55", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-07-16 18:26:52", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
-            fill = "lightskyblue", alpha = 0.03) +
+            fill = "darkgrey", alpha = 0.03) +
   geom_rect(aes(xmin = as.POSIXct("2019-07-16 18:47:03", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-07-16 21:06:56", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
-            fill = "lightskyblue", alpha = 0.03) +
+            fill = "darkgrey", alpha = 0.03) +
   geom_line(aes(group=ID), size=0.75) +
+  annotate("text", x=as.POSIXct("2019-07-16 05:55:00", format="%Y-%m-%d %H:%M:%S"), y=480, label= "Morning\nstart") + 
+  annotate("text", x=as.POSIXct("2019-07-16 10:00:00", format="%Y-%m-%d %H:%M:%S"), y=480, label= "Morning\nstop") +
+  annotate("text", x=as.POSIXct("2019-07-16 17:15:00", format="%Y-%m-%d %H:%M:%S"), y=480, label= "Evening\nstart") +
+  annotate("text", x=as.POSIXct("2019-07-16 20:00:00", format="%Y-%m-%d %H:%M:%S"), y=480, label= "Evening\nstop") +
   scale_x_datetime(date_breaks = "4 hour",
                    date_labels = "%H:%M", expand=c(0,0)) +
-  scale_y_continuous(expand=c(0,0)) +
-  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
+  scale_y_continuous(limits = c(0,510), expand=c(0,0)) +
+  theme(text = element_text(size=20), plot.margin=unit(c(1,1,1,1),"cm")) +
   xlab("Time") +
   ylab("Activity")
 
@@ -81,7 +87,7 @@ ggplot(data = df5, aes(x = datetime, y = average)) +
   scale_x_datetime(date_breaks = "4 hour",
                    date_labels = "%I:%M %p", expand=c(0,0)) +
   scale_y_continuous(expand=c(0,0)) +
-  theme(text = element_text(size=16)) +
+  theme(text = element_text(size=12)) +
   xlab("Time") +
   ylab("Displacement (km)")
 
@@ -101,12 +107,12 @@ View(df7)
 
 df8<-rbind(df6,df7)
 
-ggplot(data = df8, aes(x = partofday, y = average)) + 
+dispplot<-ggplot(data = df8, aes(x = partofday, y = average)) + 
   geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
+  theme(text = element_text(size=20), plot.margin=unit(c(1,5.5,1,1),"cm"), legend.position = "none") +
   xlab("Time period") +
   ylab("Displacement (km)")
 
@@ -135,12 +141,12 @@ colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
 
 df12<-rbind(df11,df10,df9)
 
-ggplot(data = df12, aes(x = partofday, y = average)) + 
+wcplot<-ggplot(data = df12, aes(x = partofday, y = average)) + 
   geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
+  theme(text = element_text(size=20), plot.margin=unit(c(1,1,1,1),"cm"), legend.position = "none") +
   xlab("Time period") +
   ylab("Woody cover")
 
@@ -167,14 +173,16 @@ colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
 
 df12<-rbind(df11,df10,df9)
 
-ggplot(data = df12, aes(x = partofday, y = average)) + 
+gladeplot<-ggplot(data = df12, aes(x = partofday, y = average)) + 
   geom_line(aes(group=species, linetype=species), size=1.5) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
   scale_y_continuous(expand=c(0,0)) +
   scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
-  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm")) +
+  theme(text = element_text(size=20), plot.margin=unit(c(1,1,1,1),"cm"),legend.key.size = unit(2.5,"line")) +
   xlab("Time period") +
   ylab("Ditance to glade (km)")
+
+plot_grid(actplot,dispplot,wcplot,gladeplot, labels=c("A","B","C","D"), label_size = 22, rel_widths = c(1, 1.2))
 
 #supplementary info start and stop time histogram
 hunt_times<-read.csv("Hunts_2.csv")
