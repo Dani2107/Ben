@@ -3,6 +3,8 @@ library(ggplot2)
 library(lubridate)
 library(dplyr)
 library(cowplot)
+library(gridExtra)
+library(grid)
 
 #1st is activity (all dogs) with lines indicating start and stop times
 activity<-read.csv("alldogs.csv")
@@ -15,6 +17,9 @@ activity$Dummy <- format(as.Date("2019-07-16"),"%Y-%m-%d")
 activity$DummyDT <- as.POSIXct(paste(activity$Dummy,activity$LocalTime), format="%Y-%m-%d %H:%M:%S")
 activity$DummyDT <- round_date(activity$DummyDT, "5 minutes")
 activity$SumAct<-activity$ActivityX+activity$ActivityY
+temps<-read.csv("Hourly_temp.csv")
+temps$Dummy<-format(as.Date("2019-07-16"),"%Y-%m-%d")
+temps$Time <- as.POSIXct(paste(temps$Dummy,temps$Time), format="%Y-%m-%d %H:%M")
 
 
 
@@ -47,10 +52,31 @@ actplot<-ggplot(data = df2, aes(x = DummyDT, y = average)) +
   annotate("text", x=as.POSIXct("2019-07-16 20:00:00", format="%Y-%m-%d %H:%M:%S"), y=480, label= "Evening\nstop") +
   scale_x_datetime(date_breaks = "4 hour",
                    date_labels = "%H:%M", expand=c(0,0)) +
-  scale_y_continuous(limits = c(0,510), expand=c(0,0)) +
-  theme(text = element_text(size=20), plot.margin=unit(c(1,1,1,1),"cm")) +
-  xlab("Time") +
+  scale_y_continuous(limits = c(0,510)) +
+  theme(text = element_text(size=20), plot.margin=unit(c(0,1,0,0.5),"cm"), axis.title.x=element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   ylab("Activity")
+
+tempplot<- ggplot(data = temps, aes(x=Time, y=Temperature)) + 
+           geom_line(aes(x=Time, y=Temperature), size=0.75, col="red") +
+           scale_x_datetime(date_breaks = "4 hour",
+                   date_labels = "%H:%M", expand=c(0,0)) +
+           scale_y_continuous(limits = c(10,26)) +
+           theme(text = element_text(size=20), plot.margin=unit(c(1,1,0.5,0.5),"cm"), axis.title.x=element_blank(),
+                 panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+           ylab("Temperature (°C)")
+
+pdf(file="a_plot", width=11, height=11)
+
+grid.arrange(arrangeGrob(grobs = list(actplot, tempplot), ncol = 1, heights=unit(c(20,8), "cm")),
+             nrow = 1, ncol = 1,
+             bottom = textGrob("Time", gp = gpar(fontsize = 18)))
+
+dev.off()
+
+
+
+           
 
 #distance moved plot
 
