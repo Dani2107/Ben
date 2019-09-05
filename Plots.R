@@ -2,6 +2,7 @@
 library(ggplot2)
 library(lubridate)
 library(dplyr)
+library(plyr)
 library(cowplot)
 library(gridExtra)
 library(grid)
@@ -211,6 +212,8 @@ pdf_convert("c_plot.pdf", format="jpeg",dpi=150, filenames="c_plot.jpg")
 #stacked bar of hunts
 library(scales)
 
+hunt_times<-read.csv("Hunts_2.csv")
+
 View(hunt_times)
 levels(hunt_times$PartOfDay3)
 
@@ -232,7 +235,7 @@ for(i in 1:length(times)){
 
 c[5]<-100-sum(c)
 
-times[5]<-"Other"
+times[5]<-"Multiple time periods"
 
 d<-c(rep("Hunts",5),rep("Activity",5))
 
@@ -245,7 +248,7 @@ df_percents$type<-d
 colnames(df_percents)<-c("Time","Act","Type")
 df_percents$Act<-as.numeric(as.character(df_percents$Act))
 levels(df_percents$Time)[levels(df_percents$Time)=="Day"] <- "Midday"
-df_percents$Time<-factor(df_percents$Time, levels = c("Other","Night","Evening","Midday","Morning"))
+df_percents$Time<-factor(df_percents$Time, levels = c("Multiple time periods","Night","Evening","Midday","Morning"))
 df_percents$Type<-factor(df_percents$Type, levels = c("Hunts","Activity"))
 
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -260,13 +263,13 @@ bars<-ggplot(data=df_percents, aes(x=Type,y=Act,fill=Time))  +
   scale_y_continuous(expand = c(0, 0),limits=c(0,100)) +
   ylab("Percentage") 
   
-pdf(file="bar_plot.pdf", width=10, height=11)
+pdf(file="bar_plot.pdf", width=13, height=11)
 
 plot_grid(bars, ncol=1, align='hv')
 
 dev.off()
 
-pdf_convert("bar_plot.pdf", format="jpeg",dpi=150, filenames="bar_plot..jpg")
+pdf_convert("bar_plot.pdf", format="jpeg",dpi=150, filenames="bar_plot.jpg")
 
 #supplementary info start and stop time histogram
 hunt_times<-read.csv("Hunts_2.csv")
@@ -283,16 +286,26 @@ hist(hunt_times$SSTime,breaks=288)
 
 times2<-seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by = "5 min")
 
-ggplot(data=hunt_times, aes(x=SSTime)) + 
-  geom_histogram(breaks=times)+
-  scale_x_datetime(date_labels = "%I:%M %p", expand=c(0,0)) +
+ggplot(data=hunt_times, aes(x=SSTime)) +
+  geom_rect(aes(xmin = as.POSIXct("2019-09-05 04:55:39", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-09-05 06:56:04", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
+            fill = "lightblue", alpha = 0.03) +
+  geom_rect(aes(xmin = as.POSIXct("2019-09-05 06:56:05", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-09-05 16:01:54", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
+            fill = "hotpink", alpha = 0.03) +
+  geom_rect(aes(xmin = as.POSIXct("2019-09-05 16:01:55", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-09-05 18:26:52", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
+            fill = "lightgreen", alpha = 0.03) +
+  geom_rect(aes(xmin = as.POSIXct("2019-09-05 18:26:53", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-09-05 23:59:59", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
+            fill = "blue", alpha = 0.03) +
+  geom_rect(aes(xmin = as.POSIXct("2019-09-05 00:00:00", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-09-05 04:55:38", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
+            fill = "blue", alpha = 0.03) +
+  geom_histogram(breaks=times2) +
+  scale_x_datetime(date_labels = "%I:%M %p") +
   scale_y_continuous(expand=c(0,0)) +
   theme(text = element_text(size=16)) +
   xlab("Time") +
   ylab("Activity")
 
 ggplot(data=hunt_times, aes(x=Stop.time.or.start)) + 
-  geom_histogram(breaks=times)+
+  geom_histogram(breaks=times2)+
   scale_x_datetime(date_labels = "%I:%M %p", expand=c(0,0)) +
   scale_y_continuous(expand=c(0,0)) +
   theme(text = element_text(size=16)) +
@@ -301,6 +314,170 @@ ggplot(data=hunt_times, aes(x=Stop.time.or.start)) +
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#FORGET THIS JUST PUT COLOURS ON THE OTHERS
+
+#Start, stop for morning, day, evening and night
+hunt_times<-read.csv("Hunts_2.csv")
+
+View(hunt_times)
+
+hunt_times$SSTime<-as.POSIXct(hunt_times$SSTime, format="%H:%M:%S")
+hunt_times$Stop.time.or.start <-as.POSIXct(hunt_times$Stop.time.or.start , format="%H:%M:%S")
+hunt_times$SSTime<-round_date(hunt_times$SSTime, "5 minutes")
+hunt_times$Stop.time.or.start<-round_date(hunt_times$Stop.time.or.start, "5 minutes")
+hunt_times$time_date_stop<-as.POSIXct(hunt_times$time_date_stop, format="%d/%m/%Y %H:%M")
+hunt_times$StopTime<-format(hunt_times$time_date_stop, "%H:%M")
+hunt_times$StopTime<-as.POSIXct(hunt_times$StopTime, format="%H:%M")
+
+morningstart<-hunt_times[which(between(hunt_times$SSTime,as.POSIXct("04:55:39", format="%H:%M:%S"),as.POSIXct("06:56:04", format="%H:%M:%S"))),]
+morningstop<-hunt_times[which(between(hunt_times$StopTime,as.POSIXct("07:31", format="%H:%M"),as.POSIXct("12:52", format="%H:%M"))),]
+daystart<-hunt_times[which(between(hunt_times$SSTime,as.POSIXct("06:56:05", format="%H:%M:%S"),as.POSIXct("16:01:54", format="%H:%M:%S"))),]
+daystop<-hunt_times[which(between(hunt_times$StopTime,as.POSIXct("07:31", format="%H:%M"),as.POSIXct("18:47", format="%H:%M"))),]
+eveningstart<-hunt_times[which(between(hunt_times$SSTime,as.POSIXct("16:01:55", format="%H:%M:%S"),as.POSIXct("18:26:52", format="%H:%M:%S"))),]
+eveningstop<-hunt_times[which(between(hunt_times$StopTime,as.POSIXct("18:48", format="%H:%M"),as.POSIXct("21:07", format="%H:%M"))),]
+nightstart<-hunt_times[which(between(hunt_times$SSTime,as.POSIXct("18:26:53", format="%H:%M:%S"),as.POSIXct("04:55:38", format="%H:%M:%S"))),]
+nightstop<-hunt_times[which(between(hunt_times$StopTime,as.POSIXct("21:07", format="%H:%M"),as.POSIXct("07:30", format="%H:%M"))),]
+
+
+timesmorning<-seq.POSIXt(as.POSIXct("04:45:00", format="%H:%M:%S"), as.POSIXct("07:00:00", format="%H:%M:%S"), by = "5 min")
+
+morning1<-ggplot(data=morningstart, aes(x=SSTime)) + 
+  geom_histogram(breaks=timesmorning)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+timesmorning2<-seq.POSIXt(as.POSIXct("07:15:00", format="%H:%M:%S"), as.POSIXct("13:00:00", format="%H:%M:%S"), by = "5 min")
+
+morning2<-ggplot(data=morningstop, aes(x=StopTime)) + 
+  geom_histogram(breaks=timesmorning2)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+
+timesday<-seq.POSIXt(as.POSIXct("06:45:00", format="%H:%M:%S"), as.POSIXct("16:15:00", format="%H:%M:%S"), by = "5 min")
+
+day1<-ggplot(data=daystart, aes(x=SSTime)) + 
+  geom_histogram(breaks=timesday)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+timesday2<-seq.POSIXt(as.POSIXct("07:15:00", format="%H:%M:%S"), as.POSIXct("19:00:00", format="%H:%M:%S"), by = "5 min")
+
+day2<-ggplot(data=daystop, aes(x=StopTime)) + 
+  geom_histogram(breaks=timesday2)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+timesevening<-seq.POSIXt(as.POSIXct("15:15:00", format="%H:%M:%S"), as.POSIXct("18:45:00", format="%H:%M:%S"), by = "5 min")
+
+evening1<-ggplot(data=eveningstart, aes(x=SSTime)) + 
+  geom_histogram(breaks=timesevening)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+timesevening2<-seq.POSIXt(as.POSIXct("18:30:00", format="%H:%M:%S"), as.POSIXct("21:15:00", format="%H:%M:%S"), by = "5 min")
+
+evening2<-ggplot(data=eveningstop, aes(x=StopTime)) + 
+  geom_histogram(breaks=timesevening2)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+#tricky because crosses midnight
+
+timesnight<-seq.POSIXt(as.POSIXct("18:15:00", format="%H:%M:%S"), as.POSIXct("05:15:00", format="%H:%M:%S"), by = "5 min")
+
+night1<-ggplot(data=nightstart, aes(x=SSTime)) + 
+  geom_histogram(breaks=timesnight)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+timesnight2<-seq.POSIXt(as.POSIXct("21:00:00", format="%H:%M:%S"), as.POSIXct("07:45:00", format="%H:%M:%S"), by = "5 min")
+
+night2<-ggplot(data=nightstop, aes(x=StopTime)) + 
+  geom_histogram(breaks=timesnight2)+
+  scale_x_datetime(date_labels = "%I:%M %p") +
+  scale_y_continuous(expand=c(0,0)) +
+  theme(text = element_text(size=16)) +
+  xlab("Time") +
+  ylab("Activity")
+
+
+
+
+#Distance to glades all three for SI
+df9<-hunts %>%
+  group_by(partofday) %>%
+  summarise(average=mean(glade.dist.km, na.rm=TRUE))
+df9$species<-"wild dogs"
+impala$glade.dist.km<-as.numeric(as.character(impala$glade.dist.km))
+df10<-impala %>%
+  group_by(partofday) %>%
+  summarise(average=mean(glade.dist.km, na.rm=TRUE))
+df10$species<-"impala"
+View(df10)
+df11<-dikdik %>%
+  group_by(partofday3) %>%
+  summarise(average=mean(glade.dist.km, na.rm=TRUE))
+df11$species<-"dikdik"
+colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
+df12<-rbind(df11,df10,df9)
+
+
+gladeplot<-ggplot(data = df12, aes(x = partofday, y = average)) + 
+  geom_line(aes(group=species, colour=species), size=1.5) +
+  scale_linetype_manual(values=c("dashed","solid","dotted")) +
+  scale_y_continuous(expand=c(0,0)) +
+  scale_x_discrete(expand=c(0,0), limits=c("Morning","Day","Evening","Night")) +
+  theme(text = element_text(size=24), plot.margin=unit(c(1,1,1,1),"cm"),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  scale_colour_brewer(palette="Dark2") +
+  xlab("Time period") +
+  ylab("Ditance to glade (km)")
+
+
+
+
+pdf(file="distplot.pdf", width=11, height=11)
+
+plot_grid(gladeplot)
+
+dev.off()
+
+pdf_convert("distplot.pdf", format="jpeg",dpi=150, filenames="distplot.jpg")
 
 #DISCARDED
 
