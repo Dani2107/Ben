@@ -7,6 +7,8 @@ library(cowplot)
 library(gridExtra)
 library(grid)
 library(RColorBrewer)
+library(pdftools)
+
 
 #1st is activity (all dogs) with lines indicating start and stop times
 activity<-read.csv("alldogs.csv")
@@ -106,23 +108,21 @@ df11<-dikdik %>%
 df11$species<-"dikdik"
 colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
 
-df12<-rbind(df11,df10,df9)
-colnames(df12)[which(names(df12) == "species")] <- "Species"
-levels(df12$partofday)[levels(df12$partofday)=="Day"] <- "Midday"
+df21<-rbind(df11,df10,df9)
+colnames(df21)[which(names(df21) == "species")] <- "Species"
+levels(df21$partofday)[levels(df21$partofday)=="Day"] <- "Midday"
 
 
-wcplot<-ggplot(data = df12, aes(x = partofday, y = average)) + 
+wcplot<-ggplot(data = df21, aes(x = partofday, y = average)) + 
   geom_line(aes(group=Species, colour=Species), size=1.5) +
   geom_errorbar(aes(ymin=average-std, ymax=average+std, group=Species, colour=Species), size=0.8, width=0.1) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
-  scale_y_continuous(expand=c(0,0)) +
-  scale_x_discrete(expand=c(0,0), limits=c("Morning","Midday","Evening","Night")) +
+  scale_y_continuous(expand=c(0,0),limits=c(0.05,0.21)) +
+  scale_x_discrete(expand=c(0,0.1), limits=c("Morning","Midday","Evening","Night")) +
   scale_colour_brewer(palette="Dark2") +
-  theme(text = element_text(size=24), plot.margin=unit(c(0.2,2,0.5,2),"cm"),
-                                              panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        legend.title=element_text(size=24), 
-        legend.text=element_text(size=22),
-        legend.key.size = unit(1.5, "cm")) +
+  theme(text = element_text(size=12), axis.title.x=element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        legend.position = "none", plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm")) +
   xlab("Time period") +
   ylab("Woody cover")
 
@@ -160,19 +160,20 @@ levels(df9$partofday)[levels(df9$partofday)=="Day"] <- "Midday"
 gladeplot_wd<-ggplot(data = df9, aes(x = partofday, y = average, group=1)) + 
   geom_line(size=1.5, colour="#7570B3") +
   geom_errorbar(aes(ymin=average-std, ymax=average+std), size=0.8, width=0.1, colour="#7570B3") +
-  scale_y_continuous(limits=c(0.4,0.5)) +
-  scale_x_discrete(expand=c(0,0), limits=c("Morning","Midday","Evening","Night")) +
-  theme(text = element_text(size=24), plot.margin=unit(c(0.2,7.4,0,2),"cm"),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  xlab("Time period") +
-  ylab("Distance to glade (km)")
+  scale_y_continuous("Distance to glade (km)",limits=c(0.4,0.5), c(0.4,0.45,0.5)) +
+  scale_x_discrete(expand=c(0,0.1), limits=c("Morning","Midday","Evening","Night")) +
+  theme(text = element_text(size=12), axis.title.x=element_blank(),
+        panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"),
+        axis.line = element_line(colour = "black")) +
+  xlab("Time period") 
 
 gladeplot_prey<-ggplot(data = df12, aes(x = partofday, y = prob, group=species)) + 
   geom_line(aes(colour=species), size=1.5) +
   scale_y_continuous(limits=c(0,0.25)) +
-  scale_x_discrete(expand=c(0,0), limits=c("Morning","Midday","Evening","Night")) +
-  theme(text = element_text(size=24), plot.margin=unit(c(0,7.4,0.5,2),"cm"),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+  scale_x_discrete(expand=c(0,0.1), limits=c("Morning","Midday","Evening","Night")) +
+  theme(text = element_text(size=12), 
+        panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"),
+        axis.line = element_line(colour = "black"),
         legend.position = "none") +
   scale_colour_brewer(palette="Dark2") +
   xlab("Time period") +
@@ -231,17 +232,23 @@ table(hunts1$Temperature,hunts1$part_of_day)
 View(dfhunt)
 
 dfhunt$average[12]<-126.9
+brewer.pal(n = 8, name = "Dark2")
 
-huntplot<-ggplot(data=dfhunt, aes(x = Temperature, y = average, group=part_of_day)) + 
+dfhunt$part_of_day <- relevel(dfhunt$part_of_day,"Morning")
+
+pallete1<-c("#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666", "#1B9E77", "#D95F02", "#7570B3")
+
+huntplot<-ggplot(data=dfhunt, aes(x = Temperature, y = average, group=part_of_day, colour=part_of_day)) + 
   geom_point(aes(colour=part_of_day), size=1.5) +
-  geom_smooth(method = "lm", level=0.99) +
+  geom_smooth(aes(colour=part_of_day),method = "lm", level=0.99) +
   scale_y_continuous(limits=c(100,250)) +
-  theme(text = element_text(size=24), plot.margin=unit(c(0,7.4,0.5,2),"cm"),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        legend.position = "none") +
-  scale_colour_brewer(palette="Dark2") +
-  xlab("Time period") +
-  ylab("Probability of glade use")
+  theme(text = element_text(size=12), legend.position = c(0.2, 0.88), axis.title.x=element_blank(),
+        panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"), 
+        axis.line = element_line(colour = "black")) +
+  scale_colour_manual(values=c("#E7298A", "midnightblue")) +
+  scale_x_continuous("Temperature (°C)", c(24,26,28,30,32,34), limits=c(23,33)) +
+  labs(colour = "Period") +
+  ylab("Hunt duration (minutes)")
 
 
 #scat plot
@@ -249,17 +256,42 @@ diet<-read.csv("diet_by_temp_plot.csv")
 
 dietplot<-ggplot(data=diet, aes(x = maxtemp_prev_day, y = impala_1)) + 
   geom_point(size=1.5) +
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), level=0.95) +
-  theme(text = element_text(size=24), plot.margin=unit(c(0,7.4,0.5,2),"cm"),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+  geom_smooth(colour="black",method = "glm", method.args = list(family = "binomial"), level=0.95) +
+  theme(text = element_text(size=12),
+        panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"),
+        axis.line = element_line(colour = "black"),
         legend.position = "none") +
-  scale_colour_brewer(palette="Dark2") +
+  scale_x_continuous("Temperature (°C)", c(24,26,28,30,32,34), limits=c(23,34)) +
   xlab("Temperature") +
   ylab("Probability of impala")
 
 
+left<-plot_grid(wcplot,gladeplot_wd,gladeplot_prey, labels=c('a','b','c'), ncol=1)
+right<-plot_grid(huntplot,dietplot,labels=c('d','e'), ncol=1)
+
+legend1 <- get_legend(
+  wcplot + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom")
+)
+
+pdf(file="EL_plot.pdf", width=8, height=7)
+
+plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
 
 
+dev.off()
+
+pdf_convert("EL_plot.pdf", format="jpeg",dpi=1500, filenames="EL_plot.jpg")
+
+convertGraph("EL_plot.pdf", "EL_plot.jpeg", size = 1.0, path = "C:/Users/rabaiotti.d/Documents/GitHub/Ben" )
+
+png(filename="EL_plot.png", width=700, height=600,
+     pointsize=12, res=100)
+
+plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
+
+dev.off()
 
 
 
