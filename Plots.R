@@ -1,8 +1,8 @@
 #plots
 library(ggplot2)
 library(lubridate)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(cowplot)
 library(gridExtra)
 library(grid)
@@ -207,6 +207,61 @@ library(pdftools)
 pdf_convert("a_plot.pdf", format="jpeg",dpi=150, filenames="a_plot.jpg")
 pdf_convert("b_plot.pdf", format="jpeg",dpi=150, filenames="b_plot.jpg")
 pdf_convert("c_plot.pdf", format="jpeg",dpi=150, filenames="c_plot.jpg")
+
+
+#hunt length plot
+hunts1<-read.csv("bouts_for_huntsplot.csv")
+hunts1$Temperature<-as.numeric(as.character(hunts1$Temperature))
+hunts1$Temperature<-round(hunts1$Temperature)
+hunts1$Temperature[hunts1$Temperature == 20] <- 21
+hunts1$Temperature[hunts1$Temperature == 33] <- 32
+
+
+se<-function(x){
+  sd(x, na.rm=TRUE)/sqrt(length(x))
+}
+
+dfhunt<-hunts1 %>%
+  group_by(part_of_day, Temperature) %>%
+  summarise(average=mean(Duration, na.rm=TRUE),std=se(Duration))
+
+table(hunts1$Temperature,hunts1$part_of_day)
+
+
+View(dfhunt)
+
+dfhunt$average[12]<-126.9
+
+huntplot<-ggplot(data=dfhunt, aes(x = Temperature, y = average, group=part_of_day)) + 
+  geom_point(aes(colour=part_of_day), size=1.5) +
+  geom_smooth(method = "lm", level=0.99) +
+  scale_y_continuous(limits=c(100,250)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(0,7.4,0.5,2),"cm"),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        legend.position = "none") +
+  scale_colour_brewer(palette="Dark2") +
+  xlab("Time period") +
+  ylab("Probability of glade use")
+
+
+#scat plot
+diet<-read.csv("diet_by_temp_plot.csv")
+
+dietplot<-ggplot(data=diet, aes(x = maxtemp_prev_day, y = impala_1)) + 
+  geom_point(size=1.5) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), level=0.95) +
+  theme(text = element_text(size=24), plot.margin=unit(c(0,7.4,0.5,2),"cm"),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        legend.position = "none") +
+  scale_colour_brewer(palette="Dark2") +
+  xlab("Temperature") +
+  ylab("Probability of impala")
+
+
+
+
+
+
 
 
 #stacked bar of hunts
