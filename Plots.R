@@ -8,6 +8,8 @@ library(gridExtra)
 library(grid)
 library(RColorBrewer)
 library(pdftools)
+library(png)
+library(magick)
 
 
 #1st is activity (all dogs) with lines indicating start and stop times
@@ -117,7 +119,7 @@ wcplot<-ggplot(data = df21, aes(x = partofday, y = average)) +
   geom_line(aes(group=Species, colour=Species), size=1.5) +
   geom_errorbar(aes(ymin=average-std, ymax=average+std, group=Species, colour=Species), size=0.8, width=0.1) +
   scale_linetype_manual(values=c("dashed","solid","dotted")) +
-  scale_y_continuous(expand=c(0,0),limits=c(0.05,0.21)) +
+  scale_y_continuous(expand=c(0,0),limits=c(0.05,0.23)) +
   scale_x_discrete(expand=c(0,0.1), limits=c("Morning","Midday","Evening","Night")) +
   scale_colour_brewer(palette="Dark2") +
   theme(text = element_text(size=12), axis.title.x=element_blank(),
@@ -125,6 +127,13 @@ wcplot<-ggplot(data = df21, aes(x = partofday, y = average)) +
         legend.position = "none", plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm")) +
   xlab("Time period") +
   ylab("Woody cover")
+
+
+wcplot1<-ggdraw() +
+  draw_plot(wcplot) +
+  draw_image(file.path(image="dikdik_green.png"), width=0.1, height=0.1, x=0.85, y=0.5) +
+  draw_image(file.path(image="impala_orange.png"), width=0.23, height=0.23, x=0.79, y=0.25) + 
+  draw_image(file.path(image="wd_purple.png"), width=0.12, height=0.12, x=0.82, y=0.84) 
 
 pdf(file="b_plot.pdf", width=13, height=11)
 
@@ -180,22 +189,15 @@ gladeplot_prey<-ggplot(data = df12, aes(x = partofday, y = prob, group=species))
   ylab("Probability of glade use")
 
 
-pdf(file="c_plot.pdf", width=11, height=11)
+gladeplot_wd1<-ggdraw() +
+  draw_plot(gladeplot_wd) +
+  draw_image(file.path(image="wd_purple.png"), width=0.2, height=0.2, x=0.8, y=0.2) 
 
-plot_grid(gladeplot_wd,gladeplot_prey,
-          labels=c("A","B"), label_size=28, ncol=1,
-          align="v")
+gladeplot_prey1<-ggdraw() +
+  draw_plot(gladeplot_prey) +
+  draw_image(file.path(image="dikdik_green.png"), width=0.1, height=0.1, x=0.86, y=0.37) +
+  draw_image(file.path(image="impala_orange.png"), width=0.23, height=0.23, x=0.78, y=0.58) 
 
-dev.off()
-
-
-pdf(file="bc_plot.pdf", width=11, height=15)
-
-plot_grid(gladeplot_wd,gladeplot_prey, wcplot,
-          labels=c("A","B", "C"), label_size=28, ncol=1,
-          align="v")
-
-dev.off()
 
 #b and c in one plot to save pages
 pdf_convert("bc_plot.pdf", format="jpeg",dpi=150, filenames="bc_plot.jpg")
@@ -250,6 +252,10 @@ huntplot<-ggplot(data=dfhunt, aes(x = Temperature, y = average, group=part_of_da
   labs(colour = "Period") +
   ylab("Hunt duration (minutes)")
 
+huntplot1<-ggdraw() +
+  draw_plot(huntplot) +
+  draw_image(file.path(image="wd_black.png"), width=0.2, height=0.2, x=0.2, y=0.12) 
+
 
 #scat plot
 diet<-read.csv("diet_by_temp_plot.csv")
@@ -266,8 +272,13 @@ dietplot<-ggplot(data=diet, aes(x = maxtemp_prev_day, y = impala_1)) +
   ylab("Probability of impala")
 
 
-left<-plot_grid(wcplot,gladeplot_wd,gladeplot_prey, labels=c('a','b','c'), ncol=1)
-right<-plot_grid(huntplot,dietplot,labels=c('d','e'), ncol=1)
+dietplot1<-ggdraw() +
+  draw_plot(dietplot) +
+  draw_image(file.path(image="wd_black.png"), width=0.2, height=0.2, x=0.7, y=0.7) 
+
+
+left<-plot_grid(wcplot1,gladeplot_wd1,gladeplot_prey1, labels=c('a','b','c'), ncol=1)
+right<-plot_grid(huntplot1,dietplot1,labels=c('d','e'), ncol=1)
 
 legend1 <- get_legend(
   wcplot + 
@@ -277,7 +288,7 @@ legend1 <- get_legend(
 
 pdf(file="EL_plot.pdf", width=8, height=7)
 
-plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
+all<-plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
 
 
 dev.off()
@@ -293,7 +304,7 @@ plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
 
 dev.off()
 
-
+ggsave("EL_plot.tiff", all, device="tiff", dpi=800)
 
 
 #stacked bar of hunts
