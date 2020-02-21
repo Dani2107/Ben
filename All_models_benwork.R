@@ -1366,7 +1366,7 @@ d1 = lmer(glade.dist.km ~ partofday + (1|individual/effectivedate), data = na.om
 
 d2 = lmer(glade.dist.km ~ status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d3 = lmer(glade.dist.km ~ pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d3 = lmer(glade.dist.km ~ pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
 d4 = lmer(glade.dist.km ~ season + (1|individual/effectivedate), data = na.omit(hunts))
 
@@ -1378,7 +1378,7 @@ d7 = lmer(glade.dist.km ~ partofday + season + (1|individual/effectivedate), dat
 
 d8 = lmer(glade.dist.km ~ partofday + status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d9 = lmer(glade.dist.km ~ partofday + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d9 = lmer(glade.dist.km ~ partofday + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
 d10 = lmer(glade.dist.km ~ partofday + rain + (1|individual/effectivedate), data = na.omit(hunts))
 
@@ -1388,7 +1388,7 @@ d12 = lmer(glade.dist.km ~ partofday + season + partofday*season + (1|individual
 
 d13 = lmer(glade.dist.km ~ partofday + status + partofday*status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d14 = lmer(glade.dist.km ~ partofday + pack.size + partofday*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d14 = lmer(glade.dist.km ~ partofday + pack.size + partofday*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
 d15 = lmer(glade.dist.km ~ partofday + rain + partofday*rain + (1|individual/effectivedate), data = na.omit(hunts))
 
@@ -1396,7 +1396,7 @@ d16 = lmer(glade.dist.km ~ partofday + maxtemp + partofday*maxtemp + (1|individu
 
 d17 = lmer(glade.dist.km ~ maxtemp + status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d18 = lmer(glade.dist.km ~ maxtemp + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d18 = lmer(glade.dist.km ~ maxtemp + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
 d19 = lmer(glade.dist.km ~ maxtemp + season + (1|individual/effectivedate), data = na.omit(hunts))
 
@@ -1404,32 +1404,37 @@ d20 = lmer(glade.dist.km ~ maxtemp + rain + (1|individual/effectivedate), data =
 
 d21 = lmer(glade.dist.km ~ maxtemp + status + maxtemp*status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d22 = lmer(glade.dist.km ~ maxtemp + pack.size + maxtemp*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d22 = lmer(glade.dist.km ~ maxtemp + pack.size + maxtemp*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
 d23 = lmer(glade.dist.km ~ maxtemp + season + maxtemp*season + (1|individual/effectivedate), data = na.omit(hunts))
 
 d24 = lmer(glade.dist.km ~ maxtemp + rain + maxtemp*rain + (1|individual/effectivedate), data = na.omit(hunts))
 
-d25 = lmer(glade.dist.km ~ season + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d25 = lmer(glade.dist.km ~ season + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
-d26 = lmer(glade.dist.km ~ season + pack.size + season*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d26 = lmer(glade.dist.km ~ season + pack.size + season*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
-d27 = lmer(glade.dist.km ~ rain + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d27 = lmer(glade.dist.km ~ rain + pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
-d28 = lmer(glade.dist.km ~ rain + pack.size + rain*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
+#d28 = lmer(glade.dist.km ~ rain + pack.size + rain*pack.size + (1|individual/effectivedate), data = na.omit(hunts))
 
-d29 = lmer(glade.dist.km ~ pack.size + status + (1|individual/effectivedate), data = na.omit(hunts))
+#d29 = lmer(glade.dist.km ~ pack.size + status + (1|individual/effectivedate), data = na.omit(hunts))
 
-d30 = lmer(glade.dist.km ~ pack.size + status + pack.size*status + (1|individual/effectivedate), data = na.omit(hunts))
+#d30 = lmer(glade.dist.km ~ pack.size + status + pack.size*status + (1|individual/effectivedate), data = na.omit(hunts))
 
 ## making a list of models
 
-wd.glade.models = c(d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30)
-
+wd.glade.models = c(d1,d2,d4,d5,d6,d7,d8,d10,d11,d12,d13,d15,d16,d17,d19,d20,d21,d23,d24)
 
 ## producing a model selection table
 
 summary(model.avg(wd.glade.models))
+
+
+toplist<-c(d2,d4,d5,d6)
+
+summary(model.avg(toplist))
+importance(toplist)
 
 ## split into morning, evening, day and night
 
@@ -1475,13 +1480,13 @@ dn17 = lmer(glade.dist.km ~ moonshine + maxtemp + (1|individual/effectivedate), 
 
 dn18 = lmer(glade.dist.km ~ moonshine + maxtemp + maxtemp*moonshine + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn19 = lmer(glade.dist.km ~ pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn19 = lmer(glade.dist.km ~ pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
 dn20 = lmer(glade.dist.km ~ status + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn21 = lmer(glade.dist.km ~ moonshine + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn21 = lmer(glade.dist.km ~ moonshine + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn22 = lmer(glade.dist.km ~ moonshine + pack.size + moonshine*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn22 = lmer(glade.dist.km ~ moonshine + pack.size + moonshine*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
 dn23 = lmer(glade.dist.km ~ moonshine + status + (1|individual/effectivedate), data = na.omit(dognight))
 
@@ -1495,21 +1500,27 @@ dn27 = lmer(glade.dist.km ~ season + status + (1|individual/effectivedate), data
 
 dn28 = lmer(glade.dist.km ~ season + status + season*status + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn29 = lmer(glade.dist.km ~ rain + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn29 = lmer(glade.dist.km ~ rain + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn30 = lmer(glade.dist.km ~ rain + pack.size + rain*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn30 = lmer(glade.dist.km ~ rain + pack.size + rain*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn31 = lmer(glade.dist.km ~ season + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn31 = lmer(glade.dist.km ~ season + pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
-dn32 = lmer(glade.dist.km ~ season + pack.size + season*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
+#dn32 = lmer(glade.dist.km ~ season + pack.size + season*pack.size + (1|individual/effectivedate), data = na.omit(dognight))
 
 ## making list of night models
 
-dognight.list = c(dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9,dn10,dn11,dn12,dn13,dn14,dn15,dn16,dn17,dn18,dn19,dn20,dn21,dn22,dn23,dn24,dn25,dn26,dn27,dn28,dn29,dn30,dn31,dn32)
+dognight.list = c(dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9,dn10,dn11,dn12,dn13,dn14,dn15,dn16,dn17,dn18,dn20,dn23,dn24,dn25,dn26,dn27,dn28)
 
 ## model selection table
 
 summary(model.avg(dognight.list))
+
+topmods<-c(dn9,dn10,dn11,dn12,dn15,dn23)
+
+summary(model.avg(topmods))
+
+importance(topmods)
 
 #crep models#
 
