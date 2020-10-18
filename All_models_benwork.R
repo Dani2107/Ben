@@ -459,6 +459,17 @@ m22 = lmer(woodyaverage ~ partofday2 + season + partofday2*season + (1|ID/date),
 
 dik.woody.models = c(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16,m17,m18,m19,m20,m21,m22)
 
+##model selection
+a<-model.sel(dik.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m9)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
+
+
 ## producing a model selection table
 
 summary(model.avg(dik.woody.models))
@@ -507,7 +518,19 @@ dik.glade.models = c(dd1,dd2,dd3,dd4,dd5,dd6,dd7,dd8,dd9,dd10,dd11,dd12,dd13,dd1
 
 ## producing a model selection table
 
-summary(model.avg(dik.glade.models))
+a<-model.sel(dik.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+dik.glade.models2<-list(dd12,dd9)
+
+a<-summary(model.avg(dik.glade.models2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(dik.glade.models2)
 
 #daymodels
 
@@ -554,8 +577,15 @@ dd18 = lmer(woodyaverage ~ moonprev + maxtemp + maxtemp*moonprev + (1|ID), data 
 dik.glade.models = c(dd1,dd2,dd3,dd4,dd5,dd6,dd7,dd8,dd9,dd10,dd11,dd12,dd13,dd14,dd15,dd16,dd17,dd18)
 
 ## producing a model selection table
+a<-model.sel(dik.glade.models)
 
-summary(model.avg(dik.glade.models))
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(dd12)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
 
 #crepuscular models
 
@@ -603,7 +633,14 @@ dik.glade.models = c(dd1,dd2,dd3,dd4,dd5,dd6,dd7,dd8,dd9,dd10,dd11,dd12,dd13,dd1
 
 ## producing a model selection table
 
-summary(model.avg(dik.glade.models))
+a<-model.sel(dik.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(dd12)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
 
 ######IMPALA########
 impala = read.csv("impala.csv")
@@ -662,7 +699,14 @@ impala.glade.models = c(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16,m
 
 ## producing a model selection table
 
-summary(model.avg(impala.glade.models))
+a<-model.sel(impala.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m20)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
 
 ## split into morning, evening, day and night
 
@@ -718,7 +762,14 @@ imp.glade.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.glade.models))
+a<-model.sel(imp.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(m10)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 #daymodels
 
@@ -766,7 +817,20 @@ imp.glade.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.glade.models))
+a<-model.sel(imp.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+
+dik.glade.models2<-list(dd10,dd12)
+
+a<-summary(model.avg(dik.glade.models2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(dik.glade.models2)
 
 #morning models
 
@@ -1156,7 +1220,14 @@ imp.woody.models = c(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16,m17,
 
 ## producing a model selection table
 
-summary(model.avg(imp.woody.models))
+a<-model.sel(imp.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m4)$coefficients
+
+write.table(a, "clipboard", sep="\t")
+
 
 ## list of potential models - night
 
@@ -1202,7 +1273,13 @@ imp.glade.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.glade.models))
+a<-model.sel(imp.glade.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(imp11)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 #daymodels
 
@@ -1250,7 +1327,14 @@ imp.woody.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.woody.models))
+a<-model.sel(imp.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(imp10)$coefficients
+
+write.table(a, "clipboard", sep="\t")
+
 
 #morning models
 
@@ -1298,7 +1382,13 @@ imp.woody.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.woody.models))
+a<-model.sel(imp.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(imp10)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 #evening models
 
@@ -1346,7 +1436,13 @@ imp.woody.models = c(imp1,imp2,imp3,imp4,imp5,imp6,imp7,imp8,imp9,imp10,imp11,im
 
 ## producing a model selection table
 
-summary(model.avg(imp.woody.models))
+a<-model.sel(imp.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(imp12)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 
 
@@ -1668,7 +1764,14 @@ wd.woody.models = c(d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d
 
 ## producing a model selection table
 
-summary(model.avg(wd.woody.models))
+a<-model.sel(wd.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(d2)$coefficients
+
+write.table(a, "clipboard", sep="\t")
+
 
 
 #night models#
@@ -1743,7 +1846,13 @@ dognight.list = c(dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9,dn10,dn11,dn12,dn13,dn14,d
 
 ## model selection table
 
-summary(model.avg(dognight.list))
+a<-model.sel(dognight.list)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(dn20)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 #crep models#
 
@@ -1817,9 +1926,16 @@ dogcrep.list = c(dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9,dn10,dn11,dn12,dn13,dn14,dn
 
 ## model selection table
 
-summary(model.avg(dogcrep.list))
+a<-model.sel(dogcrep.list)
 
+write.table(a, "clipboard", sep="\t")
 
+a<-summary(dn20)$coefficients
+
+write.table(a, "clipboard", sep="\t")
+
+lm(woody ~ pack.size,data = na.omit(dogcrep))
+summary(lm(woody ~ pack.size,data = na.omit(dogcrep)))
 
 ######RANDOM POINT COMPARISON########
 kruskal.test()

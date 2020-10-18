@@ -34,7 +34,13 @@ food.models = c(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10)
 
 ## producing a model selection table
 
-summary(model.avg(food.models))
+a<-model.sel(food.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m1)$coefficients
+
+write.table(a, "clipboard", sep="\t")
 
 #hare
 

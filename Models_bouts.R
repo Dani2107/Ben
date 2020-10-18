@@ -43,9 +43,19 @@ Morn_mod_oc10<-lme(Morning ~ Denning , random=~1|ID, data=Occurrance2, na.action
 
 Morn_mod<-list(Morn_mod_oc1,Morn_mod_oc2,Morn_mod_oc3,Morn_mod_oc4,Morn_mod_oc5,Morn_mod_oc6,Morn_mod_oc7,Morn_mod_oc8,Morn_mod_oc9,Morn_mod_oc10)
 
+names<-paste0("Morn_mod_oc",1:10)
+
+model.sel(Morn_mod)
+
 importance(Morn_mod)
 
 summary(model.avg(Morn_mod))
+a<-summary(Morn_mod_oc2)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+write.table(summary(Morn_mod_oc2), "clipboard", sep="\t")
 
 Day_mod_oc<-lme(Day ~ Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
 summary(Day_mod_oc)
@@ -95,7 +105,21 @@ Night_mod_oc10<-lme(Night2 ~ Denning , random=~1|ID, data=Occurrance2, na.action
 
 Night_mod<-list(Night_mod_oc1,Night_mod_oc2,Night_mod_oc3,Night_mod_oc4,Night_mod_oc5,Night_mod_oc6,Night_mod_oc7,Night_mod_oc8,Night_mod_oc9,Night_mod_oc10)
 
-summary(model.avg(Night_mod))
+
+a<-model.sel(Night_mod)
+
+write.table(a, "clipboard", sep="\t")
+
+Night_mod2<-list(Night_mod_oc1,Night_mod_oc7)
+
+MuMIn::importance(Night_mod2)
+
+a<-summary(model.avg(Night_mod2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
 
 
 
@@ -124,7 +148,17 @@ Even_mod_oc10<-lme(Evening ~ Denning , random=~1|ID, data=Occurrance2, na.action
 
 Even_mod<-list(Even_mod_oc1,Even_mod_oc2,Even_mod_oc3,Even_mod_oc4,Even_mod_oc5,Even_mod_oc6,Even_mod_oc7,Even_mod_oc8,Even_mod_oc9,Even_mod_oc10)
 
+a<-model.sel(Even_mod)
+
+write.table(a, "clipboard", sep="\t")
+
 summary(model.avg(Even_mod))
+
+a<-summary(Even_mod_oc1)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
 
 #morning
 Morning2<-subset(Morning, Babysit=="no")
@@ -155,7 +189,28 @@ Morn_dur_oc10<-lme(as.numeric(as.character(Duration)) ~ Denning , random=~1|ID, 
 
 Morn_dur<-list(Morn_dur_oc1,Morn_dur_oc2,Morn_dur_oc3,Morn_dur_oc4,Morn_dur_oc5,Morn_dur_oc6,Morn_dur_oc7,Morn_dur_oc8,Morn_dur_oc9,Morn_dur_oc10)
 
-summary(model.avg(Morn_dur))
+
+a<-model.sel(Morn_dur)
+
+write.table(a, "clipboard", sep="\t")
+
+Morn_dur2<-list(Morn_dur_oc6,Morn_dur_oc8)
+
+a<-summary(model.avg(Morn_dur2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+
+MuMIn::importance(Morn_dur2)
+
+
+
+
+
+
+
                                     
 Morn_int<-lme(as.numeric(as.character(Intensity)) ~ as.numeric(as.character(Temperature))   
               , random=~1|ID, data=Morning2, na.action=na.exclude)
@@ -185,7 +240,19 @@ Morn_int<-list(Morn_int_oc1,Morn_int_oc2,Morn_int_oc3,Morn_int_oc4,Morn_int_oc5,
 
 importance(Morn_int)
 
-summary(model.avg(Morn_int))
+a<-model.sel(Morn_int)
+
+write.table(a, "clipboard", sep="\t")
+
+Morn_int2<-list(Morn_int_oc8,Morn_int_oc10)
+
+a<-summary(model.avg(Morn_int2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Morn_int2)
 
 
 Morning2$SSTime<-chron(times=Morning2$SSTime)
@@ -218,6 +285,19 @@ Morn_start<-list(Morn_start_oc1,Morn_start_oc2,Morn_start_oc3,Morn_start_oc4,Mor
 
 summary(model.avg(Morn_start))
 
+a<-model.sel(Morn_start)
+
+summary(model.avg(Morn_mod))
+
+a<-summary(Morn_start_oc8)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+
+
+
+
 hist(Morning2$SSTime)
 
 Morning2$Stop.time.or.start<-chron(times=Morning2$Stop.time.or.start)
@@ -249,6 +329,24 @@ Morn_stop_oc10<-lme(Stop.time.or.start ~ Denning , random=~1|ID, data=Morning2, 
 Morn_stop<-list(Morn_stop_oc1,Morn_stop_oc2,Morn_stop_oc3,Morn_stop_oc4,Morn_stop_oc5,Morn_stop_oc6,Morn_stop_oc7,Morn_stop_oc8,Morn_stop_oc9,Morn_stop_oc10)
 
 summary(model.avg(Morn_stop))
+
+a<-model.sel(Morn_stop)
+
+write.table(a, "clipboard", sep="\t")
+
+Morn_stop2<-list(Morn_stop_oc8,Morn_stop_oc10,Morn_stop_oc3)
+
+a<-summary(model.avg(Morn_stop2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Morn_stop2)
+
+
+
+
 
 #day
 Day2<-subset(Day, Babysit=="no")
@@ -303,6 +401,17 @@ Evening_dur<-list(Evening_dur_oc1,Evening_dur_oc2,Evening_dur_oc3,Evening_dur_oc
 
 summary(model.avg(Evening_dur))
 
+a<-model.sel(Evening_dur)
+
+a<-summary(Evening_dur_oc7)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+
+
+
+
 
 Eveningint<-lme(as.numeric(as.character(Intensity)) ~ as.numeric(as.character(Temperature)) * as.numeric(as.character(Rainfall))
                 + Denning 
@@ -333,6 +442,21 @@ Evening_Intensity<-list(Evening_Intensity_oc1,Evening_Intensity_oc2,Evening_Inte
 
 summary(model.avg(Evening_Intensity))
 
+a<-model.sel(Evening_Intensity)
+
+write.table(a, "clipboard", sep="\t")
+
+Evening_Intensity2<-list(Evening_Intensity_oc8,Evening_Intensity_oc7)
+
+a<-summary(model.avg(Evening_Intensity2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Evening_Intensity2)
+
+
 Evening2$SSTime<-chron(times=Evening2$SSTime)
 Eveningstart<-lme(SSTime ~  as.numeric(as.character(Temperature)) + as.numeric(as.character(Rainfall))
                   + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)     
@@ -362,6 +486,18 @@ Evening_start<-list(Evening_start_oc1,Evening_start_oc2,Evening_start_oc3,Evenin
 
 summary(model.avg(Evening_start))
 
+
+a<-model.sel(Evening_start)
+
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(Evening_start_oc7)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+
 Evening2$Stop.time.or.start<-chron(times=Evening2$Stop.time.or.start)
 Eveningstop<-lme(Stop.time.or.start ~ as.numeric(as.character(Temperature)) 
                  + Denning+as.numeric(as.character(Temperature)) , random=~1|ID, data=Evening2, na.action=na.exclude)     
@@ -390,6 +526,21 @@ Evening_stop_oc10<-lme(Stop.time.or.start ~ Denning , random=~1|ID, data=Evening
 Evening_stop<-list(Evening_stop_oc1,Evening_stop_oc2,Evening_stop_oc3,Evening_stop_oc4,Evening_stop_oc5,Evening_stop_oc6,Evening_stop_oc7,Evening_stop_oc8,Evening_stop_oc9,Evening_stop_oc10)
 
 summary(model.avg(Evening_stop))
+
+a<-model.sel(Evening_stop)
+
+write.table(a, "clipboard", sep="\t")
+
+Evening_stop2<-list(Evening_stop_oc10,Evening_stop_oc2)
+
+a<-summary(model.avg(Evening_stop2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Evening_stop2)
+
 
 #night
 Night2<-subset(Night, Babysit=="no")
@@ -425,6 +576,23 @@ Night_dur<-list(Night_dur_oc1,Night_dur_oc2,Night_dur_oc3,Night_dur_oc4,Night_du
 
 summary(model.avg(Night_dur))
 
+a<-model.sel(Night_dur)
+
+write.table(a, "clipboard", sep="\t")
+
+Night_dur2<-list(Night_dur_oc6,Night_dur_oc7,Night_dur_oc9)
+
+a<-summary(model.avg(Night_dur2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Night_dur2)
+
+
+
+
 Nightint<-lme(as.numeric(as.character(Intensity)) ~ Moonlight 
                 , random=~1|ID, data=Night2, na.action=na.exclude)
 summary(Nightint)
@@ -453,6 +621,20 @@ Night_Intensity_oc10<-lme(as.numeric(as.character(Intensity)) ~ Denning , random
 Night_Intensity<-list(Night_Intensity_oc1,Night_Intensity_oc2,Night_Intensity_oc3,Night_Intensity_oc4,Night_Intensity_oc5,Night_Intensity_oc6,Night_Intensity_oc7,Night_Intensity_oc8,Night_Intensity_oc9,Night_Intensity_oc10)
 
 summary(model.avg(Night_Intensity))
+
+a<-model.sel(Night_Intensity)
+
+write.table(a, "clipboard", sep="\t")
+
+Night_Intensity2<-list(Night_Intensity_oc7,Night_Intensity_oc9)
+
+a<-summary(model.avg(Night_Intensity2))
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+MuMIn::importance(Night_Intensity2)
 
 
 Night2$SSTime<-chron(times=Night2$SSTime)
@@ -484,6 +666,21 @@ Night_start<-list(Night_start_oc1,Night_start_oc2,Night_start_oc3,Night_start_oc
 
 summary(model.avg(Night_start))
 
+
+
+a<-model.sel(Night_start)
+
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(Night_start_oc2)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+
+
+
 Night2$Stop.time.or.start<-chron(times=Night2$Stop.time.or.start)
 Nightstop<-lme(Stop.time.or.start ~ Moonlight + as.numeric(as.character(Temperature_before)) * as.numeric(as.character(Rainfall))
                + Denning * as.numeric(as.character(Temperature_before)), random=~1|ID, data=Night2, na.action=na.exclude)     
@@ -513,3 +710,11 @@ Night_stop<-list(Night_stop_oc1,Night_stop_oc2,Night_stop_oc3,Night_stop_oc4,Nig
 
 summary(model.avg(Night_stop))
 
+a<-model.sel(Night_stop)
+
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(Night_stop_oc2)$tTable
+
+write.table(a, "clipboard", sep="\t")

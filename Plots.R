@@ -102,6 +102,9 @@ df10<-impala %>%
   summarise(average=mean(woody, na.rm=TRUE), std=se(woody))
 df10$species<-"impala"
 
+  
+  
+
 View(df10)
 
 df11<-dikdik %>%
@@ -109,6 +112,7 @@ df11<-dikdik %>%
   summarise(average=mean(woody), std=se(woody))
 df11$species<-"dikdik"
 colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
+
 
 df21<-rbind(df11,df10,df9)
 colnames(df21)[which(names(df21) == "species")] <- "Species"
@@ -153,6 +157,7 @@ df10<-impala %>%
   group_by(partofday) %>%
   summarise(prob=sum(in.glade)/length(in.glade))
 df10$species<-"impala"
+df10$std<-c(0.006,0.008,0.014,0.002)
 
 View(df10)
 
@@ -161,6 +166,7 @@ df11<-dikdik %>%
   summarise(prob=sum(in.glade)/length(in.glade))
 df11$species<-"dikdik"
 colnames(df11)[colnames(df11)=="partofday3"] <- "partofday"
+df11$std<-c(0.005,0.008,0.004,0.001)
 
 df12<-rbind(df11,df10)
 levels(df12$partofday)[levels(df12$partofday)=="Day"] <- "Midday"
@@ -178,7 +184,8 @@ gladeplot_wd<-ggplot(data = df9, aes(x = partofday, y = average, group=1)) +
 
 gladeplot_prey<-ggplot(data = df12, aes(x = partofday, y = prob, group=species)) + 
   geom_line(aes(colour=species), size=1.5) +
-  scale_y_continuous(limits=c(0,0.25)) +
+  geom_errorbar(aes(ymin=prob-std, ymax=prob+std, group=species, colour=species), size=0.8, width=0.1) +
+  scale_y_continuous(limits=c(0,0.26), breaks=c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25)) +
   scale_x_discrete(expand=c(0,0.1), limits=c("Morning","Midday","Evening","Night")) +
   theme(text = element_text(size=12), 
         panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"),
@@ -195,8 +202,8 @@ gladeplot_wd1<-ggdraw() +
 
 gladeplot_prey1<-ggdraw() +
   draw_plot(gladeplot_prey) +
-  draw_image(file.path(image="dikdik_green.png"), width=0.1, height=0.1, x=0.86, y=0.37) +
-  draw_image(file.path(image="impala_orange.png"), width=0.23, height=0.23, x=0.78, y=0.58) 
+  draw_image(file.path(image="dikdik_green.png"), width=0.1, height=0.1, x=0.86, y=0.36) +
+  draw_image(file.path(image="impala_orange.png"), width=0.23, height=0.23, x=0.78, y=0.55) 
 
 
 #b and c in one plot to save pages
@@ -228,6 +235,7 @@ dfhunt<-hunts1 %>%
   group_by(part_of_day, Temperature) %>%
   summarise(average=mean(Duration, na.rm=TRUE),std=se(Duration))
 
+
 table(hunts1$Temperature,hunts1$part_of_day)
 
 
@@ -241,10 +249,11 @@ dfhunt$part_of_day <- relevel(dfhunt$part_of_day,"Morning")
 pallete1<-c("#E7298A", "#66A61E", "#E6AB02", "#A6761D", "#666666", "#1B9E77", "#D95F02", "#7570B3")
 
 huntplot<-ggplot(data=dfhunt, aes(x = Temperature, y = average, group=part_of_day, colour=part_of_day)) + 
-  geom_point(aes(colour=part_of_day), size=1.5) +
+  geom_point(aes(colour=part_of_day)) +
+  geom_pointrange(aes(ymin=average-std, ymax=average+std)) +
   geom_smooth(aes(colour=part_of_day),method = "lm", level=0.99) +
   scale_y_continuous(limits=c(100,250)) +
-  theme(text = element_text(size=12), legend.position = c(0.2, 0.88), axis.title.x=element_blank(),
+  theme(text = element_text(size=12), legend.position = c(0.85, 0.88), axis.title.x=element_blank(),
         panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"), 
         axis.line = element_line(colour = "black")) +
   scale_colour_manual(values=c("#E7298A", "midnightblue")) +
@@ -278,7 +287,7 @@ dietplot1<-ggdraw() +
 
 
 left<-plot_grid(wcplot1,gladeplot_wd1,gladeplot_prey1, labels=c('a','b','c'), ncol=1)
-right<-plot_grid(huntplot1,dietplot1,labels=c('d','e'), ncol=1)
+right<-plot_grid(huntplot1,dietplot1,labels=c('a','b'), ncol=1)
 
 legend1 <- get_legend(
   wcplot + 
@@ -290,6 +299,19 @@ pdf(file="EL_plot.pdf", width=8, height=7)
 
 all<-plot_grid(left,right,legend1, ncol=2, rel_heights = c(1, .05))
 
+
+dev.off()
+
+pdf(file="prey_plot.pdf", width=4.5, height=7)
+
+plot_grid(left,legend1, ncol=1, rel_heights = c(1, .05))
+
+dev.off()
+
+
+pdf(file="wd_plots.pdf", width=4.5, height=7)
+
+right
 
 dev.off()
 
@@ -306,6 +328,15 @@ dev.off()
 
 ggsave("EL_plot.tiff", all, device="tiff", dpi=800)
 
+pdf_convert("prey_plot.pdf", format="jpeg",dpi=1500, filenames="prey_plot.jpg")
+pdf_convert("wd_plots.pdf", format="jpeg",dpi=1500, filenames="wd_plots.jpg") #deletes points for some reason
+
+png(filename="wd_plots.png", width=800, height=1200,
+    pointsize=6, res=200)
+
+right
+
+dev.off()
 
 #stacked bar of hunts
 library(scales)
@@ -645,3 +676,15 @@ dispplot<-ggplot(data = df8, aes(x = partofday, y = average)) +
   ylab("Displacement (km)")
 
 View(dikdik)
+
+#step length
+
+head(dikdik)
+se<-function(x){
+  sd(x, na.rm=TRUE)/sqrt(length(x))
+}
+
+df10<-dikdik %>%
+  group_by(partofday3) %>%
+  summarise(average=mean(displacement, na.rm=TRUE), std=sd(displacement))
+df10$species<-"impala"
