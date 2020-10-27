@@ -1,6 +1,7 @@
 #models for shade and daytime hunts
 library(lme4)
 library(MuMIn)
+library(nlme)
 
 
 dikdik2 <- read.csv("dikdik.csv")
@@ -348,7 +349,7 @@ write.table(a, "clipboard", sep="\t")
 
 #####bout modelss#####
 
-library(nlme)
+
 
 all_bouts<-read.csv("Hunts_2.csv")
 Occurrance<-read.csv("Bout_liklihood.csv")
@@ -559,7 +560,218 @@ write.table(a, "clipboard", sep="\t")
 Morn_dur2<-list(m7,m9,m6)
 
 
-a<-summary(model.avg(Morn_dur2))
+a<-summary(model.avg(Morn_dur2)) 
 
 
 write.table(a, "clipboard", sep="\t")
+
+###Evening duration###
+
+Evening2<-read.csv("Evening.csv")
+
+Evening2<-na.omit(Evening2)
+
+
+m1<-lme(Duration ~ Temperature + Moonlight, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m2<-lme(Duration ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m3<-lme(Duration ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m4<-lme(Duration ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m5<-lme(Duration ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m6<-lme(Duration ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m7<-lme(Duration ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m8<-lme(Duration ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m9<-lme(Duration ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m10<-lme(Duration ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m11<-lme(Duration ~ Temperature + Moonlight + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m12<-lme(Duration ~ Moonlight + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m13<-lme(Duration ~ Temperature + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m14<-lme(Duration ~ Temperature + Moonlight + Rainfall + Radiation , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m15<-lme(Duration ~ Temperature * Rainfall + Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m16<-lme(Duration ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m17<-lme(Duration ~ Temperature + Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m18<-lme(Duration ~ Temperature + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m19<-lme(Duration ~ Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m20<-lme(Duration ~ Radiation , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m21<-lme(Duration ~ 1, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20,m21)
+
+names<-paste0("m",1:10)
+
+a<-model.sel(Morn_mod)
+
+importance(Morn_mod)
+
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+Morn_dur2<-list(m7, m6)
+
+a<-summary(model.avg(Morn_dur2)) 
+
+b<-a$coefficients
+
+
+write.table(b, "clipboard", sep="\t")
+
+
+##morning Intensity##
+
+
+
+
+m1<-lme(Intensity ~ Temperature + Moonlight, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m2<-lme(Intensity ~ Moonlight , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m3<-lme(Intensity ~ Temperature , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m4<-lme(Intensity ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m5<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m6<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m7<-lme(Intensity ~ Temperature + Moonlight + Denning , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m8<-lme(Intensity ~ Temperature + Denning , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m9<-lme(Intensity ~ Moonlight + Denning , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m10<-lme(Intensity ~ Denning , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m11<-lme(Intensity ~ Temperature + Moonlight + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m12<-lme(Intensity ~ Moonlight + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m13<-lme(Intensity ~ Temperature + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m14<-lme(Intensity ~ Temperature + Moonlight + Rainfall + Radiation , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m15<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Denning + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m16<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m17<-lme(Intensity ~ Temperature + Moonlight + Denning + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m18<-lme(Intensity ~ Temperature + Denning + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m19<-lme(Intensity ~ Moonlight + Denning + Radiation, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m20<-lme(Intensity ~ Radiation , random=~1|ID, data=Morning2, na.action=na.exclude)
+
+m21<-lme(Intensity ~ 1, random=~1|ID, data=Morning2, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20,m21)
+
+names<-paste0("m",1:21)
+
+a<-model.sel(Morn_mod)
+
+write.table(a, "clipboard", sep="\t")
+
+
+a<-summary(m7)$tTable
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+###Evening Intensity###
+
+
+m1<-lme(Intensity ~ Temperature + Moonlight, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m2<-lme(Intensity ~ Moonlight , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m3<-lme(Intensity ~ Temperature , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m4<-lme(Intensity ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m5<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m6<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m7<-lme(Intensity ~ Temperature + Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m8<-lme(Intensity ~ Temperature + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m9<-lme(Intensity ~ Moonlight + Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m10<-lme(Intensity ~ Denning , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m11<-lme(Intensity ~ Temperature + Moonlight + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m12<-lme(Intensity ~ Moonlight + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m13<-lme(Intensity ~ Temperature + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m14<-lme(Intensity ~ Temperature + Moonlight + Rainfall + Radiation , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m15<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m16<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m17<-lme(Intensity ~ Temperature + Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m18<-lme(Intensity ~ Temperature + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m19<-lme(Intensity ~ Moonlight + Denning + Radiation, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m20<-lme(Intensity ~ Radiation , random=~1|ID, data=Evening2, na.action=na.exclude)
+
+m21<-lme(Intensity ~ 1, random=~1|ID, data=Evening2, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11, m12, m13, m14, m15, m16, m17, m18, m19, m20,m21)
+
+names<-paste0("m",1:21)
+
+a<-model.sel(Morn_mod)
+
+importance(Morn_mod)
+
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+
+a<-summary(m7)$tTable
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+
+
