@@ -6,8 +6,10 @@ library(AICcmodavg)
 
 
 dikdik2 <- read.csv("dikdik.csv")
-dikdik <- dikdik2[,c(1:4,7,15,20,23,24,27,31,32,37)]
+dikdik <- dikdik2[,c(1:4,7,15,20,23,24,26,27,31,32,37)]
 dikdik<-na.omit(dikdik)
+
+View(dikdik2)
 
 dikdikcrep<-subset(dikdik,dikdik$partofday=="Crepuscular")
 dikdikday<-subset(dikdik,dikdik$partofday=="Day")
@@ -125,15 +127,87 @@ a<-summary(m9)$coefficients
 
 write.table(a, "clipboard", sep="\t")
 
+#night#
+
+
+m1 <- lmer(woodyaverage ~ maxtemp + rain + Radiation + maxtemp*rain + (1|ID/date), data = na.omit(dikdikcrep))
+
+m2 <- lmer(woodyaverage ~ maxtemp + rain + Radiation  + (1|ID/date) , data = na.omit(dikdikcrep))
+
+m3 <- lmer(woodyaverage ~ maxtemp + Radiation + (1|ID/date) , data = na.omit(dikdikcrep))
+
+m4 <- lmer(woodyaverage ~ rain + Radiation  + (1|ID/date), data = na.omit(dikdikcrep))
+
+m5 <- lmer(woodyaverage ~ maxtemp + Radiation  + (1|ID/date), data = na.omit(dikdikcrep))
+
+m6 <- lmer(woodyaverage ~ Radiation  + (1|ID/date), data = na.omit(dikdikcrep))
+
+m7 <- lmer(woodyaverage ~ maxtemp + (1|ID/date), data = na.omit(dikdikcrep))
+
+m8 <- lmer(woodyaverage ~ rain + (1|ID/date), data = na.omit(dikdikcrep))
+
+m9 <- lmer(woodyaverage ~ 1  + (1|ID/date) , data = na.omit(dikdikcrep))
+
+dik.woody.models <- c(m1,m2,m3,m4,m5,m6,m7,m8,m9)
+
+##model selection
+a<-model.sel(dik.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m9)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
+
+##night##
+
+m1 <- lmer(woodyaverage ~ maxtemp + rain + Moon + maxtemp*rain + (1|ID), data = na.omit(dikdiknight))
+
+m2 <- lmer(woodyaverage ~ maxtemp + rain + Moon  + (1|ID) , data = na.omit(dikdiknight))
+
+m3 <- lmer(woodyaverage ~ maxtemp + Moon + (1|ID) , data = na.omit(dikdiknight))
+
+m4 <- lmer(woodyaverage ~ rain + Moon  + (1|ID), data = na.omit(dikdiknight))
+
+m5 <- lmer(woodyaverage ~ maxtemp + Moon  + (1|ID), data = na.omit(dikdiknight))
+
+m6 <- lmer(woodyaverage ~ Moon  + (1|ID), data = na.omit(dikdiknight))
+
+m7 <- lmer(woodyaverage ~ maxtemp + (1|ID), data = na.omit(dikdiknight))
+
+m8 <- lmer(woodyaverage ~ rain + (1|ID), data = na.omit(dikdiknight))
+
+m9 <- lmer(woodyaverage ~ 1  + (1|ID) , data = na.omit(dikdiknight))
+
+
+dik.woody.models <- c(m1,m2,m3,m4,m5,m6,m7,m8,m9)
+
+##model selection
+a<-model.sel(dik.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m9)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+
 ####impala woody cover#####
 
 impala2 = read.csv("impala.csv")
-impala <- impala2[,c(1:4,11,16,17,23,26,28,32,33,37)]
+impala <- impala2[,c(1:4,11,16,17,23,26,28,32,33,37,40)]
 impala<-na.omit(impala)
 
 impalamorn<-subset(impala,impala$partofday=="Morning")
 impalaeve<-subset(impala,impala$partofday=="Evening")
 impaladay<-subset(impala,impala$partofday=="Day")
+impalanight<-subset(impala,impala$partofday=="Night")
+
+View(impala2)
+
 
 ##24h##
 
@@ -223,7 +297,7 @@ a<-model.sel(dik.woody.models)
 
 write.table(a, "clipboard", sep="\t")
 
-a<-summary(m8)$coefficients
+a<-summary(m9)$coefficients
 
 
 write.table(a, "clipboard", sep="\t")
@@ -309,13 +383,51 @@ a<-summary(m8)$coefficients
 write.table(a, "clipboard", sep="\t")
 
 
+##night##
+
+m1 <- lmer(woodyaverage ~ maxtemp + rain + moonaverage2 + maxtemp*rain + (1|ID), data = na.omit(impalanight))
+
+m2 <- lmer(woodyaverage ~ maxtemp + rain + moonaverage2  + (1|ID) , data = na.omit(impalanight))
+
+m3 <- lmer(woodyaverage ~ maxtemp + moonaverage2 + (1|ID) , data = na.omit(impalanight))
+
+m4 <- lmer(woodyaverage ~ rain + moonaverage2  + (1|ID), data = na.omit(impalanight))
+
+m5 <- lmer(woodyaverage ~ maxtemp + moonaverage2  + (1|ID), data = na.omit(impalanight))
+
+m6 <- lmer(woodyaverage ~ moonaverage2  + (1|ID), data = na.omit(impalanight))
+
+m7 <- lmer(woodyaverage ~ maxtemp + (1|ID), data = na.omit(impalanight))
+
+m8 <- lmer(woodyaverage ~ rain + (1|ID), data = na.omit(impalanight))
+
+m9 <- lmer(woodyaverage ~ 1  + (1|ID) , data = na.omit(impalanight))
+
+dik.woody.models <- c(m1,m2,m3,m4,m5,m6,m7,m8,m9)
+
+a<-model.sel(dik.woody.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m8)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
 
 #####wild dog wc#####
 
 hunts = read.csv("dog_analysis.csv")
 
+hunts$status<-as.factor(hunts$status)
+
+
+hunts$status=relevel(hunts$status, ref="NotDenning")
+
+
 crep_hunts = subset(hunts,hunts$partofday3=="Crepuscular")
 
+
+night_hunts = subset(hunts,hunts$partofday3=="Night")
 
 
 ##wild dog all wc##
@@ -407,10 +519,54 @@ a<-model.sel(wd.models)
 
 write.table(a, "clipboard", sep="\t")
 
-a<-summary(m8)$coefficients
+a<-summary(m13)$coefficients
 
 
 write.table(a, "clipboard", sep="\t")
+
+## wild dog night ##
+
+
+m1 <- lmer(woody ~ maxtemp + rain + moonshine2 + maxtemp*rain + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m2 <- lmer(woody ~ maxtemp + rain + moonshine2  + (1|individual/effectivedate) , data = na.omit(night_hunts))
+
+m3 <- lmer(woody ~ maxtemp + moonshine2 + (1|individual/effectivedate) , data = na.omit(night_hunts))
+
+m4 <- lmer(woody ~ rain + moonshine2  + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m5 <- lmer(woody ~ maxtemp + moonshine2  + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m6 <- lmer(woody ~ moonshine2  + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m7 <- lmer(woody ~ maxtemp + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m8 <- lmer(woody ~ rain + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m9 <- lmer(woody ~ 1  + (1|individual/effectivedate) , data = na.omit(night_hunts))
+
+m10 <- lmer(woody ~ maxtemp + status + moonshine2 + maxtemp*status + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m11 <- lmer(woody ~ maxtemp + status + moonshine2  + (1|individual/effectivedate) , data = na.omit(night_hunts))
+
+m12 <- lmer(woody ~ status + moonshine2  + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+m13 <- lmer(woody ~ status + (1|individual/effectivedate), data = na.omit(night_hunts))
+
+
+## making a list of models
+
+wd.models = c(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13)
+
+a<-model.sel(wd.models)
+
+write.table(a, "clipboard", sep="\t")
+
+a<-summary(m13)$coefficients
+
+
+write.table(a, "clipboard", sep="\t")
+
 
 
 #####bout modelss#####
@@ -421,6 +577,7 @@ all_bouts<-read.csv("Hunts_2.csv")
 Occurrance<-read.csv("Bout_liklihood.csv")
 Morning<-read.csv("Morning.csv")
 Evening<-read.csv("Evening.csv")
+Night<-read.csv("Evening.csv")
 
 ####occurrance####
 
@@ -430,6 +587,51 @@ Occurrance2$Temperature_before<-as.numeric(as.character(Occurrance2$Temperature_
 Occurrance2$Rainfall<-as.numeric(as.character(Occurrance2$Rainfall))
 Occurrance2<-Occurrance2[,1:16]
 Occurrance2<-Occurrance2[complete.cases(Occurrance2),]  
+
+#night#
+m1<-lme(Night ~ Temperature + Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m2<-lme(Night ~ Moonlight , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m3<-lme(Night ~ Temperature , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m4<-lme(Night ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m5<-lme(Night ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m6<-lme(Night ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m7<-lme(Night ~ Temperature + Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m8<-lme(Night ~ Temperature + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m9<-lme(Night ~ Moonlight + Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m10<-lme(Night ~ Denning , random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+m11<-lme(Night ~ 1, random=~1|ID, data=Occurrance2, na.action=na.exclude)
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11)
+
+names<-paste0("m",1:11)
+
+a<-model.sel(Morn_mod)
+
+
+
+
+importance(Morn_mod)
+
+summary(m1)
+a<-summary(m1)$tTable
+
+write.table(a, "clipboard", sep="\t")
+
+
+write.table(summary(Morn_mod_oc2), "clipboard", sep="\t")
+
+
+
 
 ##morning##
 
@@ -709,6 +911,64 @@ write.table(b, "clipboard", sep="\t")
 importance(Morn_dur2)
 
 
+##Night Duration##
+
+
+Night<-read.csv("Night.csv")
+
+Night<-na.omit(Night)
+
+
+m1<-lme(Duration ~ Temperature + Moonlight, random=~1|ID, data=Night, na.action=na.exclude)
+
+m2<-lme(Duration ~ Moonlight , random=~1|ID, data=Night, na.action=na.exclude)
+
+m3<-lme(Duration ~ Temperature , random=~1|ID, data=Night, na.action=na.exclude)
+
+m4<-lme(Duration ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Night, na.action=na.exclude)
+
+m5<-lme(Duration ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Night, na.action=na.exclude)
+
+m6<-lme(Duration ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Night, na.action=na.exclude)
+
+m7<-lme(Duration ~ Temperature + Moonlight + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m8<-lme(Duration ~ Temperature + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m9<-lme(Duration ~ Moonlight + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m10<-lme(Duration ~ Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m11<-lme(Duration ~ 1, random=~1|ID, data=Night, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11)
+
+names<-paste0("m",1:11)
+
+a<-model.sel(Morn_mod)
+
+
+
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+Morn_dur2<-list(m7, m6)
+
+sw(Morn_dur2)
+
+a<-summary(model.avg(Morn_dur2)) 
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+importance(Morn_dur2)
+
 ##morning Intensity##
 
 
@@ -840,6 +1100,60 @@ a<-summary(m7)$tTable
 
 
 write.table(a, "clipboard", sep="\t")
+
+
+##Night Intensity##
+
+
+m1<-lme(Intensity ~ Temperature + Moonlight, random=~1|ID, data=Night, na.action=na.exclude)
+
+m2<-lme(Intensity ~ Moonlight , random=~1|ID, data=Night, na.action=na.exclude)
+
+m3<-lme(Intensity ~ Temperature , random=~1|ID, data=Night, na.action=na.exclude)
+
+m4<-lme(Intensity ~ Temperature + Moonlight + Rainfall , random=~1|ID, data=Night, na.action=na.exclude)
+
+m5<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Denning, random=~1|ID, data=Night, na.action=na.exclude)
+
+m6<-lme(Intensity ~ Temperature * Rainfall + Moonlight + Temperature * Denning, random=~1|ID, data=Night, na.action=na.exclude)
+
+m7<-lme(Intensity ~ Temperature + Moonlight + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m8<-lme(Intensity ~ Temperature + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m9<-lme(Intensity ~ Moonlight + Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m10<-lme(Intensity ~ Denning , random=~1|ID, data=Night, na.action=na.exclude)
+
+m11<-lme(Intensity ~ 1, random=~1|ID, data=Night, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10, m11)
+
+names<-paste0("m",1:11)
+
+a<-model.sel(Morn_mod)
+
+
+
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+Morn_dur2<-list(m7, m9)
+
+sw(Morn_dur2)
+
+a<-summary(model.avg(Morn_dur2)) 
+
+b<-a$coefmat.subset
+
+write.table(b, "clipboard", sep="\t")
+
+importance(Morn_dur2)
 
 #Morning start
 
@@ -1145,3 +1459,222 @@ write.table(a, "clipboard", sep="\t")
 a<-summary(m1)$coefficients
 
 write.table(a, "clipboard", sep="\t")
+
+
+#24 hour models
+
+#number of hunts
+
+bouts24h_all<-read.csv("24_hour_values.csv")
+
+bouts24h<-subset(bouts24h_all, Babysitting=="no")
+
+bouts24h2<-na.omit(bouts24h)
+
+
+
+###number of hunts###
+
+
+
+m1<-glmer(Hunt_number ~ Temperature + Moonlight + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m2<-glmer(Hunt_number ~ Moonlight + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m3<-glmer(Hunt_number ~ Temperature + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m4<-glmer(Hunt_number ~ Temperature + Moonlight + Rainfall + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m5<-glmer(Hunt_number ~ Temperature * Rainfall + Moonlight + Denning+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m6<-glmer(Hunt_number ~ Temperature * Rainfall + Moonlight + Temperature * Denning+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m7<-glmer(Hunt_number ~ Temperature + Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m8<-glmer(Hunt_number ~ Temperature + Denning + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m9<-glmer(Hunt_number ~ Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m10<-glmer(Hunt_number ~ Denning + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m11<-glmer(Hunt_number ~ Temperature + Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m12<-glmer(Hunt_number ~ Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m13<-glmer(Hunt_number ~ Temperature + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m14<-glmer(Hunt_number ~ Temperature + Moonlight + Rainfall + Radiation + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m15<-glmer(Hunt_number ~ Temperature * Rainfall + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m16<-glmer(Hunt_number ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m17<-glmer(Hunt_number ~ Temperature + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m18<-glmer(Hunt_number ~ Temperature + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m19<-glmer(Hunt_number ~ Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m20<-glmer(Hunt_number ~ Radiation + (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+m21<-glmer(Hunt_number ~ 1+ (1|ID), data=bouts24h2, na.action=na.exclude, family=poisson)
+
+models24h = c(m1,m2,m3,m4,m5,m6,m7, m8, m9, m10)
+
+a<-model.sel(models24h)
+
+write.table(a, "clipboard", sep="\t")
+
+nhunt<-list(m2, m9, m1)
+
+sw(nhunt)
+
+a<-summary(model.avg(nhunt)) 
+
+
+write.table(a, "clipboard", sep="\t")
+
+summary(m1)
+
+###all 24h duration###
+
+m1<-lmer(Duration.24h ~ Temperature + Moonlight + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m2<-lmer(Duration.24h ~ Moonlight + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m3<-lmer(Duration.24h ~ Temperature + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m4<-lmer(Duration.24h ~ Temperature + Moonlight + Rainfall + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m5<-lmer(Duration.24h ~ Temperature * Rainfall + Moonlight + Denning+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m6<-lmer(Duration.24h ~ Temperature * Rainfall + Moonlight + Temperature * Denning+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m7<-lmer(Duration.24h ~ Temperature + Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m8<-lmer(Duration.24h ~ Temperature + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m9<-lmer(Duration.24h ~ Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m10<-lmer(Duration.24h ~ Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m11<-lmer(Duration.24h ~ Temperature + Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m12<-lmer(Duration.24h ~ Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m13<-lmer(Duration.24h ~ Temperature + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m14<-lmer(Duration.24h ~ Temperature + Moonlight + Rainfall + Radiation + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m15<-lmer(Duration.24h ~ Temperature * Rainfall + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m16<-lmer(Duration.24h ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m17<-lmer(Duration.24h ~ Temperature + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m18<-lmer(Duration.24h ~ Temperature + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m19<-lmer(Duration.24h ~ Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m20<-lmer(Duration.24h ~ Radiation + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m21<-lmer(Duration.24h ~ 1+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10)
+
+names<-paste0("m",1:10)
+
+a<-model.sel(Morn_mod)
+
+
+
+
+
+write.table(a, "clipboard", sep="\t")
+
+
+Morn_dur2<-list(m7, m6, m9)
+
+sw(Morn_dur2)
+
+a<-summary(model.avg(Morn_dur2)) 
+
+b<-a$coefmat.subset
+
+summary(m7)
+
+
+write.table(b, "clipboard", sep="\t")
+
+importance(Morn_dur2)
+
+
+##all Intensity##
+
+
+
+
+m1<-lmer(Intensity.24h ~ Temperature + Moonlight+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m2<-lmer(Intensity.24h ~ Moonlight + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m3<-lmer(Intensity.24h ~ Temperature + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m4<-lmer(Intensity.24h ~ Temperature + Moonlight + Rainfall + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m5<-lmer(Intensity.24h ~ Temperature * Rainfall + Moonlight + Denning+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m6<-lmer(Intensity.24h ~ Temperature * Rainfall + Moonlight + Temperature * Denning+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m7<-lmer(Intensity.24h ~ Temperature + Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m8<-lmer(Intensity.24h ~ Temperature + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m9<-lmer(Intensity.24h ~ Moonlight + Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m10<-lmer(Intensity.24h ~ Denning + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m11<-lmer(Intensity.24h ~ Temperature + Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m12<-lmer(Intensity.24h ~ Moonlight + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m13<-lmer(Intensity.24h ~ Temperature + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m14<-lmer(Intensity.24h ~ Temperature + Moonlight + Rainfall + Radiation + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m15<-lmer(Intensity.24h ~ Temperature * Rainfall + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m16<-lmer(Intensity.24h ~ Temperature * Rainfall + Moonlight + Temperature * Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m17<-lmer(Intensity.24h ~ Temperature + Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m18<-lmer(Intensity.24h ~ Temperature + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m19<-lmer(Intensity.24h ~ Moonlight + Denning + Radiation+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m20<-lmer(Intensity.24h ~ Radiation + (1|ID), data=bouts24h2, na.action=na.exclude)
+
+m21<-lmer(Intensity.24h ~ 1+ (1|ID), data=bouts24h2, na.action=na.exclude)
+
+
+
+
+Morn_mod<-list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10)
+
+
+names<-paste0("m",1:10)
+
+a<-model.sel(Morn_mod)
+
+Morn_dur2<-list(m10, m8)
+
+sw(Morn_dur2)
+
+a<-summary(model.avg(Morn_dur2)) 
+
+b<-a$coefmat.subset
+
+summary(m7)
