@@ -12,6 +12,7 @@ library(png)
 library(magick)
 
 
+
 #1st is activity (all dogs) with lines indicating start and stop times
 activity<-read.csv("alldogs.csv")
 View(activity)
@@ -27,6 +28,8 @@ temps<-read.csv("Hourly_temp.csv")
 temps$Dummy<-format(as.Date("2019-07-16"),"%Y-%m-%d")
 temps$Time <- as.POSIXct(paste(temps$Dummy,temps$Time), format="%Y-%m-%d %H:%M")
 
+#just plot for book
+
 
 
 ggplot(data = a, aes(x = DummyDT, y = SumAct, group=1)) + geom_line()
@@ -41,7 +44,33 @@ df2<- activity %>%
 
 View(df2)
 
+###plot for book (no bars of times)###
+actplot<-ggplot(data = df2, aes(x = DummyDT, y = average)) + 
+  geom_line(aes(group=ID), size=0.75) +
+  scale_x_datetime(date_breaks = "4 hour",
+                   date_labels = "%H:%M", expand=c(0,0), limits=ymd_hms(c("2019-07-15 23:00:00", "2019-07-17 00:00:01"))) +
+  scale_y_continuous(limits = c(0,510)) +
+  theme(text = element_text(size=24), plot.margin=unit(c(0,2,0,1.5),"cm"), axis.title.x=element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  ylab("Activity")
 
+tempplot<- ggplot(data = temps, aes(x=Time, y=Temperature)) + 
+  geom_line(aes(x=Time, y=Temperature), size=0.75, col="red") +
+  scale_x_datetime(date_breaks = "4 hour",
+                   date_labels = "%H:%M", expand=c(0,0), limits=ymd_hms(c("2019-07-15 23:00:00", "2019-07-17 00:00:01"))) +
+  scale_y_continuous(limits = c(10,26)) +
+  theme(text = element_text(size=22), plot.margin=unit(c(0.2,2,0.5,1.5),"cm"), axis.title.x=element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+  ylab("Temperature (°C)")
+
+pdf(file="book_plot.pdf", width=11, height=11)
+
+plot_grid(actplot, tempplot, labels=c("A","B"), label_size=28, ncol=1, rel_heights=c(3,1), align='hv')
+
+dev.off()
+
+
+###plot for paper###
 actplot<-ggplot(data = df2, aes(x = DummyDT, y = average)) + 
   geom_rect(aes(xmin = as.POSIXct("2019-07-16 04:55:39", format="%Y-%m-%d %H:%M:%S"), xmax = as.POSIXct("2019-07-16 06:56:04", format="%Y-%m-%d %H:%M:%S"), ymin = -Inf, ymax = Inf),
             fill = "lightblue", alpha = 0.03) +
@@ -276,7 +305,7 @@ dietplot<-ggplot(data=diet, aes(x = maxtemp_prev_day, y = impala_1)) +
         panel.background = element_blank(), plot.margin=unit(c(0.2,0.2,0.2,0.8),"cm"),
         axis.line = element_line(colour = "black"),
         legend.position = "none") +
-  scale_x_continuous("Temperature (°C)", c(24,26,28,30,32,34), limits=c(23,34)) +
+  scale_x_continuous("Maximum daily temperature (°C)", c(24,26,28,30,32,34), limits=c(23,34)) +
   xlab("Temperature") +
   ylab("Probability of impala")
 
@@ -315,9 +344,10 @@ right
 
 dev.off()
 
-pdf_convert("EL_plot.pdf", format="jpeg",dpi=1500, filenames="EL_plot.jpg")
+library("animation")
+ani.options(outdir = getwd())
+im.convert("wd_plots.pdf", output = "EL_plot2.png", extra.opts="-density 150")
 
-convertGraph("EL_plot.pdf", "EL_plot.jpeg", size = 1.0, path = "C:/Users/rabaiotti.d/Documents/GitHub/Ben" )
 
 png(filename="EL_plot.png", width=700, height=600,
      pointsize=12, res=100)
